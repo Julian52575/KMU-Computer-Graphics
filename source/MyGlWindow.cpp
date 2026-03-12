@@ -55,7 +55,7 @@ void MyGlWindow::setupBuffer()
 		-0.1f, 0.1f, 0.0f,    0,0,1
 	};
 
-	
+	/*
 	// 1
 
 	//1.1
@@ -101,6 +101,7 @@ void MyGlWindow::setupBuffer()
 	glEnableVertexArrayAttrib(vaoHandler, 1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	*/
 
 	/*
 	// 2 : DSA -> New OpenGL 4.2
@@ -157,8 +158,46 @@ void MyGlWindow::setupBuffer()
 		1,  //attribute index
 		1   //vbo binding index
 	);
-	glEnableVertexArrayAttrib(vaoHandler, 1); // enable position attribute
+	glEnableVertexArrayAttrib(vaoHandler, 1); // enable position 
 	*/
+
+	// 3. interleaved data
+	// 3.1 non DSA
+	glGenVertexArrays(1, &vaoHandler);
+	glBindVertexArray(vaoHandler);
+
+	// 1.2 VBO
+	// VBO
+	glGenBuffers(1, &vbo_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
+	// data ...
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex),
+		vertex,
+		GL_STATIC_DRAW);
+
+
+	glVertexAttribPointer(
+		0,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * 6,
+		(void*)	0
+	);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(
+		1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * 6,
+		(void*)(sizeof(float) * 3)
+	);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
 }
 
 void MyGlWindow::draw(void)
