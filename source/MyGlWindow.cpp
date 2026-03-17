@@ -4,24 +4,22 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-MyGlWindow::MyGlWindow(int w, int h)
+MyGlWindow::MyGlWindow(int w, int h) : m_cube(), shaderProgram(std::make_unique<ShaderProgram>())
 
 //==========================================================================
 {
 	m_width = w;
 	m_height = h;
 
-	setupBuffer();
-	
+	//load shaders
+	shaderProgram->initFromFiles("../../shaders/simple.vert", "../../shaders/simple.frag");
 }
-
-
-
 
 void MyGlWindow::setupBuffer()
 {
+
 	shaderProgram = std::make_unique<ShaderProgram>();
-	
+
 	//load shaders
 	shaderProgram->initFromFiles("../../shaders/simple.vert", "../../shaders/simple.frag");
 
@@ -123,7 +121,7 @@ void MyGlWindow::setupBuffer()
 		vaoHandler,  //vao
 		0,  //vbo binding index
 		vbo_position,  //vbo
-		0,  //offset : 
+		0,  //offset :
 		sizeof(float) * 4  //stride : distance in bytes between consecutive vertex attributes
 	);
 	glNamedBufferData(
@@ -136,7 +134,7 @@ void MyGlWindow::setupBuffer()
 		vaoHandler,  //vao
 		1,  //vbo binding index
 		vbo_color,  //vbo
-		0,  //offset : 
+		0,  //offset :
 		sizeof(float) * 3  //stride : distance in bytes between consecutive vertex attributes
 	);
 	glVertexArrayAttribBinding(
@@ -160,7 +158,7 @@ void MyGlWindow::setupBuffer()
 		1,  //attribute index
 		1   //vbo binding index
 	);
-	glEnableVertexArrayAttrib(vaoHandler, 1); // enable position 
+	glEnableVertexArrayAttrib(vaoHandler, 1); // enable position
 	*/
 
 	//*
@@ -185,7 +183,7 @@ void MyGlWindow::setupBuffer()
 		GL_FLOAT,
 		GL_FALSE,
 		sizeof(float) * 6,
-		(void*)	0
+		(void*)0
 	);
 	glEnableVertexAttribArray(0);
 
@@ -246,14 +244,14 @@ void MyGlWindow::setupBuffer()
 
 	//uniform
 	shaderProgram->use();
-		glUniformMatrix4fv(
-			shaderProgram->uniform("Model"),
-				1, GL_FALSE, glm::value_ptr(model)
-		);
+	glUniformMatrix4fv(
+		shaderProgram->uniform("Model"),
+		1, GL_FALSE, glm::value_ptr(model)
+	);
 
-		glBindVertexArray(vaoHandler);
-		//call draw function (Primitive), (starting index), (# of vertices)
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(vaoHandler);
+	//call draw function (Primitive), (starting index), (# of vertices)
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 	shaderProgram->disable();
 }
 
@@ -261,7 +259,6 @@ void MyGlWindow::draw(void)
 {
 	glViewport(0, 0, m_width, m_height);
 	shaderProgram->use();
-	glBindVertexArray(vaoHandler);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+		m_cube.draw();
 	shaderProgram->disable();
 }
