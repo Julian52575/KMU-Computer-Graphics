@@ -25,6 +25,8 @@ void MyGlWindow::setupBuffer()
 	//load shaders
 	shaderProgram->initFromFiles("../../shaders/simple.vert", "../../shaders/simple.frag");
 
+	shaderProgram->addUniform("Model");
+
 	const float vertexPosition[] = {
 			-0.1, -0.1, 0,1,
 			-0.1, 0.1, 0,1,
@@ -238,6 +240,21 @@ void MyGlWindow::setupBuffer()
 	);
 	glVertexArrayAttribBinding(vaoHandler, 1, 0);
 	glEnableVertexArrayAttrib(vaoHandler, 1);
+
+	// 4x4 identity matrix
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.2, 0, 0));
+
+	//uniform
+	shaderProgram->use();
+		glUniformMatrix4fv(
+			shaderProgram->uniform("Model"),
+				1, GL_FALSE, glm::value_ptr(model)
+		);
+
+		glBindVertexArray(vaoHandler);
+		//call draw function (Primitive), (starting index), (# of vertices)
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	shaderProgram->disable();
 }
 
 void MyGlWindow::draw(void)
