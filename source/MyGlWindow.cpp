@@ -161,6 +161,7 @@ void MyGlWindow::setupBuffer()
 	glEnableVertexArrayAttrib(vaoHandler, 1); // enable position 
 	*/
 
+	//*
 	// 3. interleaved data
 	// 3.1 non DSA
 	glGenVertexArrays(1, &vaoHandler);
@@ -168,8 +169,8 @@ void MyGlWindow::setupBuffer()
 
 	// 1.2 VBO
 	// VBO
-	glGenBuffers(1, &vbo_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	// data ...
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex),
 		vertex,
@@ -198,6 +199,45 @@ void MyGlWindow::setupBuffer()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
+
+	// 4. Interleaved DSA
+	glCreateVertexArrays(1, &vaoHandler);
+	glNamedBufferData(vbo,
+		sizeof(vertex),
+		vertex,
+		GL_STATIC_DRAW);
+
+	glVertexArrayVertexBuffer(
+		vaoHandler,
+		0,
+		vbo,
+		0,
+		sizeof(float) * 6
+	);
+
+	///position
+	glVertexArrayAttribFormat(
+		vaoHandler,
+		0,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0
+	);
+	glVertexArrayAttribBinding(vaoHandler, 0, 0); // attribute index, binding idx
+	glEnableVertexArrayAttrib(vaoHandler, 0);
+
+	// color
+	glVertexArrayAttribFormat(
+		vaoHandler,
+		1,	// attribute index (color)
+		3,  // data per vertex
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * 3
+	);
+	glVertexArrayAttribBinding(vaoHandler, 1, 0);
+	glEnableVertexArrayAttrib(vaoHandler, 1);
 }
 
 void MyGlWindow::draw(void)

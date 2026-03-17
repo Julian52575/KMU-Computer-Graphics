@@ -22,5 +22,5 @@ private:
 	GLuint vbo_position;
 	GLuint vbo_color;
 	GLuint vaoHandler;
-	GLuint vbo_vertex;
+	GLuint vbo;
 };
