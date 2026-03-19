@@ -80,9 +80,27 @@ MyGlWindow::~MyGlWindow()
 
 }
 
+void MyGlWindow::initialize()
+{
+	m_cube = std::make_unique<ColorCube>();
+
+
+	try {
+		m_shaderNew = std::unique_ptr<Program>(Program::GenerateFromFileVsFs("../../shaders/simple.vert", "../../shaders/simple.frag"));
+	}
+	catch (const std::runtime_error& e) {
+		std::cerr << "Shader loading error " << e.what() << std::endl;
+		exit(84);
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Unexcpetec error " << e.what() << std::endl;
+		exit(84);
+	}
+}
+
 void MyGlWindow::draw(void)
 {
-	m_shader->use();
+	m_shaderNew->BindProgram();
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -99,27 +117,9 @@ void MyGlWindow::draw(void)
 	glm::mat4 projection(1.0f);
 	projection = perspective(45.f, 1.0f * m_width / m_height, 0.1f, 500.0f);
 
-	
-	glUniformMatrix4fv(m_shader->uniform("model"), 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(m_shader->uniform("view"), 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(m_shader->uniform("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-	
-	//glUniformMatrix4fv(m_shader->uniform("mvp"), 1, GL_FALSE, glm::value_ptr(mvp));
-	
+	glm::mat4 mvp = projection * view * model;
+	m_shaderNew->SetMatrix("mvp", mvp);
 
 	m_cube->draw();
-}
-
-void MyGlWindow::initialize()
-{
-	m_cube = std::make_unique<ColorCube>();
-	m_shader = std::make_unique<ShaderProgram>();
-	m_shader->initFromFiles("../../shaders/simple.vert", "../../shaders/simple.frag");
-
-	
-	m_shader->addUniform("model");
-	m_shader->addUniform("view");
-	m_shader->addUniform("projection");
-	
-	//m_shader->addUniform("mvp");
+	m_shaderNew->UnbindProgram();
 }

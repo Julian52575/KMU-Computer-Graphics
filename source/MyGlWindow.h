@@ -39,5 +39,6 @@ private:
 
 	std::unique_ptr<ColorCube> m_cube;
 	std::unique_ptr<ShaderProgram> m_shader;
+	std::unique_ptr<Program> m_shaderNew;
 };
 
