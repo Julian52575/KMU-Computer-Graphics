@@ -1,17 +1,17 @@
-#version 450 
+#version 430 core
 
-layout(location = 0) in vec4 coord3d; // 0: attrib # (pos)
-layout(location = 1) in vec3 v_color;  // 1: attrib (color)
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
 
-// data to fragment shader (out)
-out vec3 f_color;
+out vec4 Color;
 
-uniform mat4 Model;  //4x4 matrix from app.
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+//uniform mat4 mvp;  // proj * view * model
 
 void main()
 {
- 
-   gl_Position =  coord3d;
-   f_color = v_color;
-
+    gl_Position = projection * (view * (model * vec4(aPos, 1.0)));
+    Color = vec4(aColor, 1.0);
 }

@@ -17,6 +17,6 @@ private:
 	int m_width;
 	int m_height;
 
-	GLuint vaoHandler;
-	GLuint vbo_cube_vertices, vbo_cube_colors, vbo_cube_elements;
+	GLuint vaoHandle;
+	GLuint vbo_cube_vertices, vbo_cube_colors, ibo_cube_elements;
 };

@@ -57,66 +57,33 @@ void ColorCube::setupBuffer()
 		6, 7, 3,
 	};
 
-	// DSA (Non-Interleaved)
-	glCreateVertexArrays(1, &vaoHandler);
-	glCreateBuffers(1, &vbo_cube_vertices);  //vbo for position
-	glCreateBuffers(1, &vbo_cube_colors); //vbo for color
-	glCreateBuffers(1, &vbo_cube_elements); //ibo(ebo)
+	glCreateVertexArrays(1, &vaoHandle);
 
-	glNamedBufferData(vbo_cube_vertices,
-		sizeof(vbo_cube_vertices),
-		cube_vertices,
-		GL_STATIC_DRAW
-	);
-	glVertexArrayVertexBuffer(
-		vaoHandler,
-		0,
-		vbo_cube_vertices,
-		0,
-		sizeof(float) * 3
-	);
-	glVertexArrayAttribBinding(vaoHandler, 0, 0);
-	glEnableVertexArrayAttrib(vaoHandler, 0);
+	glCreateBuffers(1, &vbo_cube_colors);
+	glCreateBuffers(1, &vbo_cube_vertices);
+	glCreateBuffers(1, &ibo_cube_elements);
 
-	//color
+	glNamedBufferData(vbo_cube_vertices, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW);
 	glNamedBufferData(vbo_cube_colors, sizeof(cube_colors), cube_colors, GL_STATIC_DRAW);
-	glVertexArrayVertexBuffer(
-		vaoHandler,
-		1,
-		vbo_cube_colors,
-		0,
-		sizeof(float) * 3
-	);
-	glVertexArrayAttribFormat(
-		vaoHandler,
-		1,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0
-	);
-	glVertexArrayAttribBinding(vaoHandler, 1, 1);
-	glEnableVertexArrayAttrib(vaoHandler, 1);
+	glNamedBufferData(ibo_cube_elements, sizeof(cube_elements), cube_elements, GL_STATIC_DRAW);
 
-	//index
-	glNamedBufferData(vbo_cube_elements, sizeof(cube_elements), cube_elements, GL_STATIC_DRAW);
-	glVertexArrayElementBuffer(
-		vaoHandler,
-		vbo_cube_elements
-	);
+	glVertexArrayVertexBuffer(vaoHandle, 0, vbo_cube_vertices, 0, sizeof(float) * 3);
+	glVertexArrayVertexBuffer(vaoHandle, 1, vbo_cube_colors, 0, sizeof(float) * 3);
+
+	glVertexArrayAttribFormat(vaoHandle, 0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayAttribBinding(vaoHandle, 0, 0);
+	glEnableVertexArrayAttrib(vaoHandle, 0);
+	glVertexArrayAttribFormat(vaoHandle, 1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayAttribBinding(vaoHandle, 1, 1);
+	glEnableVertexArrayAttrib(vaoHandle, 1);
+	glVertexArrayElementBuffer(vaoHandle, ibo_cube_elements);
 }
 
-void ColorCube::draw(void)
+void ColorCube::draw()
 {
-	glBindVertexArray(vaoHandler); //binding
-		int size = 0;
-		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-		float elementCount = size / sizeof(GLushort);
-		//index 
-		glDrawElements(GL_TRIANGLES,
-			elementCount,
-			GL_UNSIGNED_SHORT,
-			0);
-	
-	glBindVertexArray(0); //unbinding
+	glBindVertexArray(vaoHandle);
+	int size;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+	float elementsCount = size / sizeof(GLushort);
+	glDrawElements(GL_TRIANGLES, elementsCount, GL_UNSIGNED_SHORT, 0);
 }
