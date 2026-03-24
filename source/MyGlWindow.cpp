@@ -6,6 +6,8 @@
 
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Bunny.h"
+#include "Cow.h"
 
 static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
@@ -15,13 +17,11 @@ static float DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 //std::unique_ptr<ShaderProgram> shaderProgram = nullptr;
 std::unique_ptr<Program> program = nullptr;
 
-MyGlWindow::MyGlWindow(int w, int h)
+MyGlWindow::MyGlWindow(int w, int h) : render(std::make_unique<Cow>())
 //==========================================================================
 {
-
 	m_width = w;
 	m_height = h;
-	m_cube = nullptr;
 
 	glm::vec3 viewPoint(DEFAULT_VIEW_POINT[0], DEFAULT_VIEW_POINT[1], DEFAULT_VIEW_POINT[2]);
 	glm::vec3 viewCenter(DEFAULT_VIEW_CENTER[0], DEFAULT_VIEW_CENTER[1], DEFAULT_VIEW_CENTER[2]);
@@ -82,11 +82,8 @@ MyGlWindow::~MyGlWindow()
 
 void MyGlWindow::initialize()
 {
-	m_cube = std::make_unique<ColorCube>();
-
-
 	try {
-		m_shaderNew = std::unique_ptr<Program>(Program::GenerateFromFileVsFs("../../shaders/simple.vert", "../../shaders/simple.frag"));
+		m_shaderNew = std::unique_ptr<Program>(Program::GenerateFromFileVsFs("../../shaders/normal.vert", "../../shaders/normal.frag"));
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << "Shader loading error " << e.what() << std::endl;
@@ -120,6 +117,6 @@ void MyGlWindow::draw(void)
 	glm::mat4 mvp = projection * view * model;
 	m_shaderNew->SetMatrix("mvp", mvp);
 
-	m_cube->draw();
+	render->draw();
 	m_shaderNew->UnbindProgram();
 }

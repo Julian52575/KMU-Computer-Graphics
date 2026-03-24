@@ -24,6 +24,8 @@ find_package(gl3w CONFIG REQUIRED)
 file(GLOB_RECURSE SOURCES
   "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/source/*.h"
+   "${CMAKE_CURRENT_SOURCE_DIR}/source/models/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/source/models/*.h"
 )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/source")
 

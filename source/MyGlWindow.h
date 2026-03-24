@@ -15,8 +15,10 @@
 
 
 #include "cube.h"
+#include "Bunny.h"
 #include "Viewer.h"
 #include "Program.h"
+#include "IRender.h"
 
 
 #pragma warning(pop)
@@ -37,7 +39,7 @@ private:
 	int m_height;
 	void initialize();
 
-	std::unique_ptr<ColorCube> m_cube;
+	std::unique_ptr<IRender> render;
 	std::unique_ptr<ShaderProgram> m_shader;
 	std::unique_ptr<Program> m_shaderNew;
 };

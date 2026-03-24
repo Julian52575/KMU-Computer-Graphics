@@ -1,17 +1,17 @@
 //#define  FREEGLUT_LIB_PRAGMAS  0
 
+#pragma once
+
 #include <iostream>
 #include <GL/gl3w.h>
 #include <string>
 #include "Loader.h"
 #include "IRender.h"
 
-#pragma once
-
-class ColorCube : public IRender {
+class Bunny : public IRender {
 public:
-	ColorCube();
-	~ColorCube() = default;
+	Bunny();
+	~Bunny() = default;
 	void draw() override;
 private:
 	void setupBuffer() override;
@@ -20,5 +20,5 @@ private:
 	int m_height;
 
 	GLuint vaoHandle;
-	GLuint vbo_cube_vertices, vbo_cube_colors, ibo_cube_elements;
+	GLuint vbo_vertices, vbo_colors, vbo_elements;
 };
