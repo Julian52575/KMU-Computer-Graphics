@@ -6,8 +6,10 @@
 
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Bunny.h"
-#include "Cow.h"
+#include "Render/Bunny.h"
+#include "Render/Cow.h"
+#include "Render/cube.h"
+#include "Render/CheckeredFloor.h"
 
 static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };

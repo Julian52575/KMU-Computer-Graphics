@@ -14,11 +14,9 @@
 #include "glm/gtc/matrix_inverse.hpp"
 
 
-#include "cube.h"
-#include "Bunny.h"
+#include "Render/IRender.h"
 #include "Viewer.h"
 #include "Program.h"
-#include "IRender.h"
 
 
 #pragma warning(pop)

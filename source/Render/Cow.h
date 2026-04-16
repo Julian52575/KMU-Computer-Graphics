@@ -5,6 +5,8 @@
 #include <iostream>
 #include <GL/gl3w.h>
 #include <string>
+#include <vector>
+
 #include "Loader.h"
 #include "IRender.h"
 
@@ -21,6 +23,6 @@ private:
 	int m_height;
 
 	GLuint vaoHandle;
-	GLuint vbo_vertices, vbo_colors, ibo_elements;
+	GLuint vbo_vertices, vbo_normals, ibo_elements;
 	std::vector<glm::vec3> normals;  //normal저장하기 위한 곳 Or glm::vec3 normals[1732]
 };
