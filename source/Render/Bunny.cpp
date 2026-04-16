@@ -20,29 +20,28 @@ void Bunny::calculateNormal()
 
 void Bunny::setupBuffer()
 {
+	GLuint vbo;  // We store the entire modelVertices here
+
 	glCreateVertexArrays(1, &vaoHandle);
-	glCreateBuffers(1, &vbo_vertices); // VBO �� �� ����
-	glCreateBuffers(1, &vbo_normals); // VBO �� �� ����
 	glCreateBuffers(1, &ibo_elements); // VBO �� �� ����
+	glCreateBuffers(1, &vbo);
 
-	glNamedBufferData(vbo_vertices, sizeof(modelVertices), modelVertices, GL_STATIC_DRAW);
-	glVertexArrayVertexBuffer(vaoHandle, 0, vbo_vertices, 0, sizeof(ModelVertex));
+	glNamedBufferData(vbo, sizeof(modelVertices), modelVertices, GL_STATIC_DRAW);
+	glVertexArrayVertexBuffer(vaoHandle, 0, vbo, 0, sizeof(ModelVertex));
 
-	glNamedBufferData(vbo_normals, sizeof(modelVertices), modelVertices, GL_STATIC_DRAW);
-	glVertexArrayVertexBuffer(vaoHandle, 1, vbo_normals, sizeof(glm::vec3), sizeof(ModelVertex));
+	// position
+	glVertexArrayAttribFormat(vaoHandle, 0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayAttribBinding(vaoHandle, 0, 0);
+	glEnableVertexArrayAttrib(vaoHandle, 0); // 🔥 REQUIRED
+
+	// normal
+	glVertexArrayAttribFormat(vaoHandle, 1, 3, GL_FLOAT, GL_FALSE, offsetof(ModelVertex, normal));
+	glVertexArrayAttribBinding(vaoHandle, 1, 0);
+	glEnableVertexArrayAttrib(vaoHandle, 1); // 🔥 REQUIRED
 
 	//
 	glNamedBufferData(ibo_elements, sizeof(modelIndices), modelIndices, GL_STATIC_DRAW);
 	glVertexArrayElementBuffer(vaoHandle, ibo_elements);
-
-
-	glVertexArrayAttribFormat(vaoHandle, 0, 3, GL_FLOAT, GL_FALSE, 0);
-	glVertexArrayAttribBinding(vaoHandle, 0, 0);
-	glEnableVertexArrayAttrib(vaoHandle, 0);
-
-	glVertexArrayAttribFormat(vaoHandle, 1, 3, GL_FLOAT, GL_FALSE, 0);
-	glVertexArrayAttribBinding(vaoHandle, 1, 1);
-	glEnableVertexArrayAttrib(vaoHandle, 1);
 }
 
 void Bunny::draw()
