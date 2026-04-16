@@ -19,7 +19,7 @@ static float DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 //std::unique_ptr<ShaderProgram> shaderProgram = nullptr;
 std::unique_ptr<Program> program = nullptr;
 
-MyGlWindow::MyGlWindow(int w, int h) : render(std::make_unique<Cow>())
+MyGlWindow::MyGlWindow(int w, int h) : render(std::make_unique<Bunny>())
 //==========================================================================
 {
 	m_width = w;

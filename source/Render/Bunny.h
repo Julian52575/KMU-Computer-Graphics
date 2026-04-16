@@ -15,10 +15,12 @@ public:
 	void draw() override;
 private:
 	void setupBuffer() override;
+	void calculateNormal();
 
 	int m_width;
 	int m_height;
 
 	GLuint vaoHandle;
-	GLuint vbo_vertices, vbo_colors, vbo_elements;
+	GLuint vbo_vertices, vbo_normals, ibo_elements;
+	std::vector<glm::vec3> normals;
 };
