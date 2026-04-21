@@ -103,6 +103,14 @@ void MyGlWindow::draw(void)
 
 
 	glm::mat4 model(1.0);
+
+	// Rotate if renderObject is a TeaPot
+	if (TeaPot* d = dynamic_cast<TeaPot*>(renderObject.get())) {
+		std::cout << "Rotate" << std::endl;
+		model = glm::rotate(model, glm::radians(180 + 90.0f), glm::vec3(1, 0, 0));
+		// ptr successfully confirmed to point to a TeaPot object
+	}
+
 	glm::mat4 view = glm::lookAt(eye, look, up);
 
 
