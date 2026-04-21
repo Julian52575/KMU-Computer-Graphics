@@ -7,16 +7,17 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Render/Cow.h"
+#include "Render/TeaPot.h"
 
 static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
 static float DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 
 //fix it to use smart pointers
-//std::unique_ptr<ShaderProgram> shaderProgram = nullptr;
+std::unique_ptr<ShaderProgram> shaderProgram = nullptr;
 std::unique_ptr<Program> program = nullptr;
  
-MyGlWindow::MyGlWindow(int w, int h) : renderObject(std::make_unique<Cow>())
+MyGlWindow::MyGlWindow(int w, int h) : renderObject(std::make_unique<TeaPot>())
 //==========================================================================
 {
 	m_width = w;
@@ -164,13 +165,13 @@ void MyGlWindow::initialize()
 		exit(1);
 	}
 
-	/*
+	
 	shaderProgram = std::make_unique<ShaderProgram>();
 	//load shaders
-	shaderProgram->initFromFiles("shaders/simple.vert", "shaders/simple.frag");
+	shaderProgram->initFromFiles("../../shaders/simple.vert", "../../shaders/simple.frag");
 	//declaration of uniform var.
 	shaderProgram->addUniform("model");  //add a uniform var.
 	shaderProgram->addUniform("view");  //add a uniform var.
 	shaderProgram->addUniform("projection");
-	*/
+	
 }

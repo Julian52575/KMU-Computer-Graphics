@@ -41,4 +41,3 @@ private:
 	std::unique_ptr<ShaderProgram> m_shader = nullptr;
 	std::unique_ptr<Program> m_shaderNew = nullptr;
 };
-
