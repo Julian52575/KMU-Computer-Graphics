@@ -16,7 +16,7 @@ std::unique_ptr<Shader> Shader::GenerateFromSource(std::string name, GLenum shad
 	const char* sourceChar = source.c_str();
 	const GLint sourceSize = static_cast<GLint>(source.size());
 
-		
+
 	// Create and set the shader source
 	GLuint shaderID = glCreateShader(shaderType);
 	glShaderSource(shaderID, 1, &sourceChar, &sourceSize);
@@ -308,7 +308,7 @@ void Program::ValidateSetUniform(const std::string& name)
 {
 	if (!IsBound)
 		Logging::ThrowError("Trying to set Program variable while unbound");
-//fix is to use smart pointers later
+	//fix is to use smart pointers later
 }
 
 

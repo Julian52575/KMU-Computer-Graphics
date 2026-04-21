@@ -37,8 +37,8 @@ private:
 	int m_height;
 	void initialize();
 
-	std::unique_ptr<IRender> render;
-	std::unique_ptr<ShaderProgram> m_shader;
-	std::unique_ptr<Program> m_shaderNew;
+	std::unique_ptr<IRender> renderObject = nullptr;
+	std::unique_ptr<ShaderProgram> m_shader = nullptr;
+	std::unique_ptr<Program> m_shaderNew = nullptr;
 };
 

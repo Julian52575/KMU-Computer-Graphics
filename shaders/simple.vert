@@ -1,14 +1,21 @@
 #version 430 core
 
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aColor;
+layout(location=0) in vec3 coord3d;
+layout(location=1) in vec3 normal;
 
-out vec4 Color;
+uniform mat4 model;  //4x4 mat
+uniform mat4 view;  //4x4 mat
+uniform mat4 projection;  //4x4 mat
 
-uniform mat4 mvp;  // proj * view * model
 
-void main()
+
+
+out vec3 color;
+void main(void)
 {
-    gl_Position = mvp * vec4(aPos, 1.0);
-    Color = vec4(aColor, 1.0);
+   
+   gl_Position = (projection * (view * (model * vec4( coord3d,1.0))));
+ //  vec3 diffuse
+   //color = vec3(1,0,0);
+
 }
