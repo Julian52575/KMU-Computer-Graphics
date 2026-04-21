@@ -1,3 +1,5 @@
+#pragma warning(disable:26495)		// Member variable uninitialized
+
 #include "Sphere.h"
 
 #include <glm//gtc/constants.hpp>
@@ -7,26 +9,22 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
-Sphere::Sphere() :
+
+
+Sphere::Sphere() : ARender("Sphere"),
 	radius(1.0f), slices(32), stacks(16)
 {
-	setupBuffer();
+	this->init();
 }
 
-
-Sphere::~Sphere()
-{
-}
-
-
-Sphere::Sphere(float rad, GLuint sl, GLuint st) :
+Sphere::Sphere(float rad, GLuint sl, GLuint st) : ARender("Sphere"),
 	radius(rad), slices(sl), stacks(st)
 {
-	setupBuffer();
+	this->init();
 }
 
 	
-void Sphere::setupBuffer()
+inline void Sphere::setupBuffer()
 {
 	nVerts = (slices + 1) * (stacks + 1);
 	elements = (slices * 2 * (stacks - 1)) * 3;

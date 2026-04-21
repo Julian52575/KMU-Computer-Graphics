@@ -7,35 +7,30 @@
 
 #include <vector>
 
-#include "IRender.h"
+#include "ARender.h"
 #include "Loader.h"
 
 
 
-class Sphere : public IRender
+class Sphere : public ARender
 {
 public:
 	Sphere();
 	Sphere(float rad, GLuint sl, GLuint st);
-	~Sphere();
+	~Sphere() {};
 
-	void setup();
-	void draw();
+	void draw() override;
 	int getVertexArrayHandle();
 
-	GLuint VAO, VBO_position, VBO_normal, IBO;
-
-	
+	GLuint VAO, VBO_position, VBO_normal, IBO = 0;
 
 private:
-	GLuint nVerts, elements;
-	float radius;
-	GLuint slices, stacks;
+	inline void setupBuffer() override;
+	GLuint nVerts, elements = 0;
+	float radius = 0.0f;
+	GLuint slices, stacks = 0;
 
-	void generateVerts(float *, float *, float *, GLuint *);
-	void setupBuffer();
-
-
+	void generateVerts(float* verts, float* norms, float* tex, unsigned int* el);
 };
 
 

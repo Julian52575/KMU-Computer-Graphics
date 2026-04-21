@@ -8,6 +8,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Render/cube.h"
 #include "Render/Cow.h"
 #include "Render/TeaPot.h"
 #include "Render/Sphere.h"
@@ -97,7 +98,7 @@ glm::mat4 perspective(float fov, float aspect, float n, float f)
 }
 
 
-inline void MyGlWindow::drawRenderObject(std::unique_ptr<IRender>& renderObject, glm::mat4& model) const
+inline void MyGlWindow::drawRenderObject(std::unique_ptr<ARender>& renderObject, glm::mat4& model) const
 {
 	glm::vec3 eye = m_viewer->getViewPoint(); // m_viewer->getViewPoint().x(), m_viewer->getViewPoint().y(), m_viewer->getViewPoint().z());
 	glm::vec3 look = m_viewer->getViewCenter();   //(m_viewer->getViewCenter().x(), m_viewer->getViewCenter().y(), m_viewer->getViewCenter().z());
@@ -195,5 +196,6 @@ void MyGlWindow::initialize()
 	renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
 	renderObjectList.push_back(std::make_unique<TeaPot>());
 	renderObjectList.push_back(std::make_unique<Sphere>());
+	renderObjectList.push_back(std::make_unique<Cube>());
 	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
 }

@@ -9,11 +9,11 @@
 #include <memory>
 
 #include "Loader.h"
-#include "IRender.h"
+#include "ARender.h"
 
 #include "models/vboteapot.h"
 
-class TeaPot : public IRender {
+class TeaPot : public ARender {
 public:
 	TeaPot();
 	~TeaPot() = default;

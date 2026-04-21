@@ -1,24 +1,20 @@
-
 #define GLM_ENABLE_EXPERIMENTAL 
+
+#pragma warning(disable:26495)		// Member variable uninitialized
+
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
+
 #include "Bunny.h"
 #include "models/bunny.h"
 
 //==========================================================================
-Bunny::Bunny()
+Bunny::Bunny() : ARender("Bunny")
 {
-	setupBuffer();
+	this->init();
 }
 
-void Bunny::calculateNormal()
-{
-	//noop
-}
-
-
-
-void Bunny::setupBuffer()
+inline void Bunny::setupBuffer()
 {
 	GLuint vbo;  // We store the entire modelVertices here
 

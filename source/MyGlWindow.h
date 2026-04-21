@@ -14,7 +14,7 @@
 #include "glm/gtc/matrix_inverse.hpp"
 
 
-#include "Render/IRender.h"
+#include "Render/ARender.h"
 #include "Viewer.h"
 #include "Program.h"
 
@@ -37,8 +37,8 @@ private:
 	int m_height;
 	void initialize();
 
-	std::vector<std::unique_ptr<IRender>> renderObjectList;
-	inline void drawRenderObject(std::unique_ptr<IRender>&, glm::mat4& model) const;
+	std::vector<std::unique_ptr<ARender>> renderObjectList;
+	inline void drawRenderObject(std::unique_ptr<ARender>&, glm::mat4& model) const;
 	std::unique_ptr<ShaderProgram> m_shader = nullptr;
 	std::unique_ptr<Program> m_shaderNew = nullptr;
 };

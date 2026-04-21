@@ -1,5 +1,7 @@
-#include "Taurus.h"
+#pragma warning(disable:26495)		// Member variable uninitialized
 
+
+#include "Taurus.h"
 
 #include <GL/gl.h>
 
@@ -14,19 +16,19 @@
 #include <cstdio>
 #include <cmath>
 
-Taurus::Taurus() :
+Taurus::Taurus() : ARender("Taurus"),
     outerRadius(1.0f), innerRadius(0.5f), rings(32), sides(32)
 {
-    setupBuffer();
+    this->init();
 }
 
-Taurus::Taurus(float outerRadius, float innerRadius, int nsides, int nrings) :
+Taurus::Taurus(float outerRadius, float innerRadius, int nsides, int nrings) : ARender("Taurus"),
     outerRadius(outerRadius), innerRadius(innerRadius), rings(nrings), sides(nsides)
 {
-    setupBuffer();
+    this->init();
 }
 
-void Taurus::setupBuffer()
+inline void Taurus::setupBuffer()
 {
     faces = sides * rings;
     int nVerts  = sides * (rings+1);   // One extra ring to duplicate first ring

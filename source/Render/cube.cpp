@@ -1,16 +1,19 @@
-
 #define GLM_ENABLE_EXPERIMENTAL 
+
+#pragma warning(disable:26495)		// Member variable uninitialized
+
 #include "Cube.h"
+
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
 //==========================================================================
-ColorCube::ColorCube()
+Cube::Cube() : ARender("Cube")
 {
-	setupBuffer();
+	this->init();
 }
 
-void ColorCube::setupBuffer()
+inline void Cube::setupBuffer()
 {
 	GLfloat cube_vertices[] = {
 		// front
@@ -79,7 +82,7 @@ void ColorCube::setupBuffer()
 	glVertexArrayElementBuffer(vaoHandle, ibo_cube_elements);
 }
 
-void ColorCube::draw()
+void Cube::draw()
 {
 	glBindVertexArray(vaoHandle);
 	int size;

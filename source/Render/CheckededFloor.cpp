@@ -5,9 +5,10 @@
 
 #include "CheckeredFloor.h"
 
-CheckedFloor::CheckedFloor() : m_width(10), m_height(10)
+CheckedFloor::CheckedFloor() : ARender("CheckedFloor"),
+	m_width(10), m_height(10)
 {
-	setupBuffer();
+	this->init();
 }
 
 

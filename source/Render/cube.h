@@ -4,17 +4,17 @@
 #include <GL/gl3w.h>
 #include <string>
 #include "Loader.h"
-#include "IRender.h"
+#include "ARender.h"
 
 #pragma once
 
-class ColorCube : public IRender {
+class Cube : public ARender {
 public:
-	ColorCube();
-	~ColorCube() = default;
+	Cube();
+	~Cube() = default;
 	void draw() override;
 private:
-	void setupBuffer() override;
+	inline void setupBuffer() override;
 
 	int m_width;
 	int m_height;

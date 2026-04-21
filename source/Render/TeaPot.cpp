@@ -7,8 +7,10 @@
 #include "TeaPot.h"
 
 //==========================================================================
-TeaPot::TeaPot() : vboTeapot(std::make_unique<VBOTeapot>(64, glm::mat4(1.0f)))
+TeaPot::TeaPot() : ARender("TeaPot"),
+	vboTeapot(std::make_unique<VBOTeapot>(64, glm::mat4(1.0f)))
 {
+	this->init();
 }
 
 void TeaPot::calculateNormal()

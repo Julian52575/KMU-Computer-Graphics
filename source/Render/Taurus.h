@@ -4,10 +4,10 @@
 #include "GL/gl3w.h"
 #include <glm/mat4x4.hpp>
 
-#include "IRender.h"
+#include "ARender.h"
 
 
-class Taurus : public IRender
+class Taurus : public ARender
 {
 private:
     unsigned int vaoHandle;
@@ -18,7 +18,7 @@ private:
     void generateVerts(GLfloat*, GLfloat*, unsigned int*,
         float, float);
 
-    void setupBuffer() override;
+    inline void setupBuffer() override;
 public:
     Taurus();
     Taurus(float, float, int, int);

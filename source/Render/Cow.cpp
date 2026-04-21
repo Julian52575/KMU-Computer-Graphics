@@ -1,14 +1,17 @@
-
 #define GLM_ENABLE_EXPERIMENTAL 
+
+#pragma warning(disable:26495)		// Member variable uninitialized
+
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
+
 #include "Cow.h"
 #include "models/cow.h"
 
 //==========================================================================
-Cow::Cow()
+Cow::Cow() : ARender("Cow")
 {
-	setupBuffer();
+	this->init();
 }
 
 void Cow::calculateNormal()

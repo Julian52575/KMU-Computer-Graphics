@@ -6,9 +6,9 @@
 #include <GL/gl3w.h>
 #include <string>
 #include "Loader.h"
-#include "IRender.h"
+#include "ARender.h"
 
-class CheckedFloor : public IRender {
+class CheckedFloor : public ARender {
 public:
 	CheckedFloor();
 	~CheckedFloor() = default;

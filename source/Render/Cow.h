@@ -8,9 +8,9 @@
 #include <vector>
 
 #include "Loader.h"
-#include "IRender.h"
+#include "ARender.h"
 
-class Cow : public IRender {
+class Cow : public ARender {
 public:
 	Cow();
 	~Cow() = default;
@@ -18,9 +18,6 @@ public:
 private:
 	void setupBuffer() override;
 	void calculateNormal();  //normal계산
-
-	int m_width;
-	int m_height;
 
 	GLuint vaoHandle;
 	GLuint vbo_vertices, vbo_normals, ibo_elements;
