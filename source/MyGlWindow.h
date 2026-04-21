@@ -39,7 +39,7 @@ private:
 
 	CheckedFloor renderFloor;
 	std::vector<std::unique_ptr<ARender>> renderObjectList;
-	inline void drawRenderObject(ARender&, glm::mat4& model) const;
+	inline void drawRenderObject(ARender&, glm::mat4&) const;
 
 	std::unique_ptr<ShaderProgram> m_shader = nullptr;
 	std::unique_ptr<Program> m_shaderNew = nullptr;

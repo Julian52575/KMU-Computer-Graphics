@@ -8,6 +8,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Render/CheckeredFloor.h"
 #include "Render/cube.h"
 #include "Render/Cow.h"
 #include "Render/TeaPot.h"
@@ -24,7 +25,7 @@ static float DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 std::unique_ptr<ShaderProgram> shaderProgram = nullptr;
 std::unique_ptr<Program> program = nullptr;
  
-MyGlWindow::MyGlWindow(int w, int h)
+MyGlWindow::MyGlWindow(int w, int h) : renderFloor(CheckedFloor(33, 33, 5.0f, 2.5f))
 //==========================================================================
 {
 	m_width = w;
@@ -166,8 +167,14 @@ void MyGlWindow::draw(void)
 	}
 	glm::mat4 model(1.0);
 
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // move right
-	//drawRenderObject(renderFloor, model);
+	model = glm::translate(model,
+		glm::vec3(
+			0.0f - (renderFloor.m_width * renderFloor.m_checksize_x / 2),
+			0.0f,
+			0.0f - (renderFloor.m_height * renderFloor.m_checksize_z / 2)
+		)
+	);
+	drawRenderObject(renderFloor, model);
 }
 
 MyGlWindow::~MyGlWindow()

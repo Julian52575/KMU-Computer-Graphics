@@ -91,4 +91,18 @@ const Material neonBlue = {
     256.0f
 };
 
+const Material zero = {
+    {0.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f},
+    0.0f
+};
+
+const Material checkFloor = {
+    {0.1745f, 0.01175f, 0.01175f},
+    {0.61424f, 0.04136f, 0.04136f},
+    {0.727811f, 0.626959f, 0.626959f},
+    0.0f
+};
+
 #endif //MATERIALS_H
