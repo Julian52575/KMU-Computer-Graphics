@@ -7,9 +7,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
-Sphere::Sphere()
+Sphere::Sphere() :
+	radius(1.0f), slices(32), stacks(16)
 {
-
+	setupBuffer();
 }
 
 
@@ -18,14 +19,15 @@ Sphere::~Sphere()
 }
 
 
-
 Sphere::Sphere(float rad, GLuint sl, GLuint st) :
-radius(rad), slices(sl), stacks(st)
+	radius(rad), slices(sl), stacks(st)
 {
-
+	setupBuffer();
+}
 
 	
-
+void Sphere::setupBuffer()
+{
 	nVerts = (slices + 1) * (stacks + 1);
 	elements = (slices * 2 * (stacks - 1)) * 3;
 
@@ -43,18 +45,48 @@ radius(rad), slices(sl), stacks(st)
 	
 
 	//create vao, vbo and ibo here... (We didn't use std::vector here...)
+	GLuint vbo, nbo, ibo;
 
+	glCreateVertexArrays(1, &this->VAO);
+	glCreateBuffers(1, &vbo);   // positions
+	glCreateBuffers(1, &nbo);   // normals
+	glCreateBuffers(1, &ibo);   // indices
+
+	glNamedBufferData(vbo, sizeof(float) * 3 * nVerts, v, GL_STATIC_DRAW);
+	glNamedBufferData(nbo, sizeof(float) * 3 * nVerts, n, GL_STATIC_DRAW);
+	glNamedBufferData(ibo, sizeof(unsigned int) * elements, el, GL_STATIC_DRAW);
+
+	glVertexArrayElementBuffer(this->VAO, ibo);
+	glVertexArrayVertexBuffer(this->VAO, 0, vbo, 0, sizeof(float) * 3);
+	glVertexArrayVertexBuffer(this->VAO, 1, nbo, 0, sizeof(float) * 3);
+
+	glEnableVertexArrayAttrib(this->VAO, 0);
+	glVertexArrayAttribFormat(this->VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayAttribBinding(this->VAO, 0, 0);
+
+	glEnableVertexArrayAttrib(this->VAO, 1);
+	glVertexArrayAttribFormat(this->VAO, 1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayAttribBinding(this->VAO, 1, 1);
 
 	delete[] v;
 	delete[] n;
 	delete[] el;
 	delete[] tex;
-
 }
 
 void Sphere::draw() 
 {
+	glBindVertexArray(this->VAO);
 
+		//GLint currentVAO;
+		//glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
+		//std::cout << "VAO bound: " << currentVAO << std::endl;
+
+	glDrawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+		//GLenum err = glGetError();
+		//std::cout << err << std::endl;
 }
 
 void Sphere::generateVerts(float * verts, float * norms, float * tex,

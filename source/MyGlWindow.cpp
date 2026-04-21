@@ -8,6 +8,7 @@
 
 #include "Render/Cow.h"
 #include "Render/TeaPot.h"
+#include "Render/Sphere.h"
 
 static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
@@ -17,7 +18,7 @@ static float DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 std::unique_ptr<ShaderProgram> shaderProgram = nullptr;
 std::unique_ptr<Program> program = nullptr;
  
-MyGlWindow::MyGlWindow(int w, int h) : renderObject(std::make_unique<TeaPot>())
+MyGlWindow::MyGlWindow(int w, int h) : renderObject(std::make_unique<Sphere>())
 //==========================================================================
 {
 	m_width = w;
@@ -106,7 +107,6 @@ void MyGlWindow::draw(void)
 
 	// Rotate if renderObject is a TeaPot
 	if (TeaPot* d = dynamic_cast<TeaPot*>(renderObject.get())) {
-		std::cout << "Rotate" << std::endl;
 		model = glm::rotate(model, glm::radians(180 + 90.0f), glm::vec3(1, 0, 0));
 		// ptr successfully confirmed to point to a TeaPot object
 	}

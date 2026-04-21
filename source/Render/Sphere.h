@@ -7,11 +7,12 @@
 
 #include <vector>
 
+#include "IRender.h"
 #include "Loader.h"
 
 
 
-class Sphere
+class Sphere : public IRender
 {
 public:
 	Sphere();
@@ -32,6 +33,7 @@ private:
 	GLuint slices, stacks;
 
 	void generateVerts(float *, float *, float *, GLuint *);
+	void setupBuffer();
 
 
 };
