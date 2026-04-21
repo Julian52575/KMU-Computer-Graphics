@@ -1,4 +1,4 @@
-#include "vbotorus.h"
+#include "Taurus.h"
 
 
 #include <GL/gl.h>
@@ -14,8 +14,19 @@
 #include <cstdio>
 #include <cmath>
 
-VBOTorus::VBOTorus(float outerRadius, float innerRadius, int nsides, int nrings) :
-        rings(nrings), sides(nsides)
+Taurus::Taurus() :
+    outerRadius(1.0f), innerRadius(0.5f), rings(32), sides(32)
+{
+    setupBuffer();
+}
+
+Taurus::Taurus(float outerRadius, float innerRadius, int nsides, int nrings) :
+    outerRadius(outerRadius), innerRadius(innerRadius), rings(nrings), sides(nsides)
+{
+    setupBuffer();
+}
+
+void Taurus::setupBuffer()
 {
     faces = sides * rings;
     int nVerts  = sides * (rings+1);   // One extra ring to duplicate first ring
@@ -32,9 +43,45 @@ VBOTorus::VBOTorus(float outerRadius, float innerRadius, int nsides, int nrings)
     // Generate the vertex data
     generateVerts(v, n, el, outerRadius, innerRadius);
 
-
-
 	//create vao, vbo, ibo here
+    GLuint vbo, nbo, ibo;
+
+    glCreateVertexArrays(1, &vaoHandle);
+    glCreateBuffers(1, &vbo);   // positions
+    glCreateBuffers(1, &nbo);   // normals
+    glCreateBuffers(1, &ibo);   // indices
+
+    // --- Upload vertex positions ---
+    glNamedBufferData(vbo, sizeof(float) * 3 * nVerts, v, GL_STATIC_DRAW);
+
+    // --- Upload normals ---
+    glNamedBufferData(nbo, sizeof(float) * 3 * nVerts, n, GL_STATIC_DRAW);
+
+    // --- Upload indices ---
+    glNamedBufferData(ibo, sizeof(unsigned int) * faces * 6, el, GL_STATIC_DRAW);
+
+    // --- Bind buffers to VAO ---
+
+    // Binding index buffer
+    glVertexArrayElementBuffer(vaoHandle, ibo);
+
+    // Binding vertex buffer (binding index 0)
+    glVertexArrayVertexBuffer(vaoHandle, 0, vbo, 0, sizeof(float) * 3);
+
+    // Binding normal buffer (binding index 1)
+    glVertexArrayVertexBuffer(vaoHandle, 1, nbo, 0, sizeof(float) * 3);
+
+    // --- Describe attributes ---
+
+    // layout(location = 0) → position
+    glEnableVertexArrayAttrib(vaoHandle, 0);
+    glVertexArrayAttribFormat(vaoHandle, 0, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(vaoHandle, 0, 0);
+
+    // layout(location = 1) → normal
+    glEnableVertexArrayAttrib(vaoHandle, 1);
+    glVertexArrayAttribFormat(vaoHandle, 1, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(vaoHandle, 1, 1);
 
 
 
@@ -47,20 +94,20 @@ VBOTorus::VBOTorus(float outerRadius, float innerRadius, int nsides, int nrings)
 }
 
 
-VBOTorus::~VBOTorus()
+Taurus::~Taurus()
 {
 
 	//delete shaderProgram;
 }
 
-void VBOTorus::draw() const 
+void Taurus::draw()
 {
-
-
-
+    glBindVertexArray(vaoHandle);
+    glDrawElements(GL_TRIANGLES, faces * 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
 
-void VBOTorus::generateVerts(GLfloat * verts, GLfloat * norms, unsigned int * el,
+void Taurus::generateVerts(GLfloat * verts, GLfloat * norms, unsigned int * el,
                              float outerRadius, float innerRadius)
 {
 	float TWOPI = 2 * glm::pi<float>();

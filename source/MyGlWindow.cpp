@@ -9,6 +9,7 @@
 #include "Render/Cow.h"
 #include "Render/TeaPot.h"
 #include "Render/Sphere.h"
+#include "Render/Taurus.h"
 
 static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
@@ -18,7 +19,7 @@ static float DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 std::unique_ptr<ShaderProgram> shaderProgram = nullptr;
 std::unique_ptr<Program> program = nullptr;
  
-MyGlWindow::MyGlWindow(int w, int h) : renderObject(std::make_unique<Sphere>())
+MyGlWindow::MyGlWindow(int w, int h) : renderObject(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32))
 //==========================================================================
 {
 	m_width = w;
