@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <format>
+#include "Materials/Materials.h"
 
 
 class Logging
@@ -111,6 +112,7 @@ public:
 	void SetTexture(GLuint id, GLuint textureID);
 	void SetTexture(const std::string& name, GLuint textureID);
 
+	void SetMaterial(const std::string& name, const Material& material);
 private:
 
 	static std::string GetProgramErrorLog(const std::vector<std::unique_ptr<Shader>>& shaders, GLuint programID);

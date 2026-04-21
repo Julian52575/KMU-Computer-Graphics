@@ -7,7 +7,7 @@
 #include "TeaPot.h"
 
 //==========================================================================
-TeaPot::TeaPot() : ARender("TeaPot"),
+TeaPot::TeaPot() : ARender("TeaPot", emerald),
 	vboTeapot(std::make_unique<VBOTeapot>(64, glm::mat4(1.0f)))
 {
 	this->init();

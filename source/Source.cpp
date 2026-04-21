@@ -166,7 +166,7 @@ int main(void)
 	glfwSetKeyCallback(window, key_callback);
 
 
-	glfwSetWindowTitle(window, "myGlWindow");
+	glfwSetWindowTitle(window, "🤓 7702224 Julian's GLWindow 🔥");
 
 
 

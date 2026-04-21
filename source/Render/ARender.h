@@ -3,22 +3,29 @@
 #pragma once
 
 #include <iostream>
-#include <GL/gl3w.h>
 #include <string>
-#include "Loader.h"
+
+#include <glm/fwd.hpp>
+#include "glm/glm.hpp"
+
+#include "Materials/Materials.h"
 
 class ARender {
 public:
-	ARender(const std::string& name);
+	ARender(const std::string& name, const Material& material = gold) :
+		name(name), material(material)
+	{
+	}
 	void init() {
 		this->setupBuffer();
-		std::cout << "[" << _name << "]" << " setup complete." << std::endl;
+		std::cout << "[" << name << "]" << " setup complete." << std::endl;
 	}
+	const std::string name;
+	const Material& material;
 
 public:
 	virtual ~ARender() {};
 	virtual void draw() = 0;
-	const std::string _name;
 
 private:
 	virtual inline void setupBuffer() = 0;

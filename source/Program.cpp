@@ -8,6 +8,7 @@
 #include <fstream>
 #include "Program.h"
 
+#include "Materials/Materials.h"
 
 //fix is to use smart pointers later
 std::unique_ptr<Shader> Shader::GenerateFromSource(std::string name, GLenum shaderType, const std::string& source)
@@ -296,6 +297,16 @@ void Program::SetTexture(const std::string& name, GLuint textureID)
 
 	glUniform1i(GetUniformID(name), TextureCount);
 	TextureCount++;
+}
+
+void Program::SetMaterial(const std::string& name, const Material& material)
+{
+	ValidateSetUniform(name);
+
+	this->SetVector(name + ".ambientColor", material.ambientColor);
+	this->SetVector(name + ".diffuseColor", material.ambientColor);
+	this->SetVector(name + ".specularColor", material.ambientColor);
+	this->SetFloat(name + ".shininess", material.shininess);
 }
 
 void Program::ValidateSetUniform(GLuint id)

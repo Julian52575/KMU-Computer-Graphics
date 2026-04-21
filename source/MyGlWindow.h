@@ -17,7 +17,7 @@
 #include "Render/ARender.h"
 #include "Viewer.h"
 #include "Program.h"
-
+#include "Render/CheckeredFloor.h"
 
 #pragma warning(pop)
 
@@ -37,8 +37,10 @@ private:
 	int m_height;
 	void initialize();
 
+	CheckedFloor renderFloor;
 	std::vector<std::unique_ptr<ARender>> renderObjectList;
-	inline void drawRenderObject(std::unique_ptr<ARender>&, glm::mat4& model) const;
+	inline void drawRenderObject(ARender&, glm::mat4& model) const;
+
 	std::unique_ptr<ShaderProgram> m_shader = nullptr;
 	std::unique_ptr<Program> m_shaderNew = nullptr;
 };

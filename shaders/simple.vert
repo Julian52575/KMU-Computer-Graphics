@@ -16,6 +16,6 @@ void main(void)
    
    gl_Position = (projection * (view * (model * vec4( coord3d,1.0))));
  //  vec3 diffuse
-   //color = vec3(1,0,0);
+   color = vec3(1,0,0);
 
 }

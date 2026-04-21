@@ -2,7 +2,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "MyGlWindow.h"
 #include <vector>
-#include <algorithm> // for std::transform
+#include <utility>
 #include <stdexcept> // for std::invalid_argument
 
 #include <glm/gtx/string_cast.hpp>
@@ -14,6 +14,7 @@
 #include "Render/Sphere.h"
 #include "Render/Taurus.h"
 #include "Render/Bunny.h"
+#include "Render/Cat.h"
 
 static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
@@ -98,7 +99,7 @@ glm::mat4 perspective(float fov, float aspect, float n, float f)
 }
 
 
-inline void MyGlWindow::drawRenderObject(std::unique_ptr<ARender>& renderObject, glm::mat4& model) const
+inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model) const
 {
 	glm::vec3 eye = m_viewer->getViewPoint(); // m_viewer->getViewPoint().x(), m_viewer->getViewPoint().y(), m_viewer->getViewPoint().z());
 	glm::vec3 look = m_viewer->getViewCenter();   //(m_viewer->getViewCenter().x(), m_viewer->getViewCenter().y(), m_viewer->getViewCenter().z());
@@ -140,7 +141,10 @@ inline void MyGlWindow::drawRenderObject(std::unique_ptr<ARender>& renderObject,
 
 	program->SetVector("viewPos", eye);
 	program->SetVector("lightPos", lightPos);
-	renderObject->draw();
+
+	program->SetMaterial("material", renderObject.material);
+
+	renderObject.draw();
 	program->UnbindProgram();
 }
 
@@ -149,17 +153,21 @@ void MyGlWindow::draw(void)
 {
 	decltype(renderObjectList)::size_type i = 0;
 
-	for (auto& it : renderObjectList) {
+	for (auto it = renderObjectList.rbegin(); it != renderObjectList.rend(); ++it) {
 		glm::mat4 model(1.0);
 
 		model = glm::translate(model, glm::vec3(RENDER_OBJECT_SPACING * i, 0.0f, 0.0f)); // move right
 		// Rotate if renderObject is a TeaPot
-		if (TeaPot* d = dynamic_cast<TeaPot*>(it.get())) {
+		if (TeaPot* d = dynamic_cast<TeaPot*>((*it).get())) {
 			model = glm::rotate(model, glm::radians(180 + 90.0f), glm::vec3(1, 0, 0));
 		}
-		drawRenderObject(it, model);
+		drawRenderObject(*(*it).get(), model);
 		i++;
 	}
+	glm::mat4 model(1.0);
+
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // move right
+	//drawRenderObject(renderFloor, model);
 }
 
 MyGlWindow::~MyGlWindow()
@@ -192,10 +200,11 @@ void MyGlWindow::initialize()
 	shaderProgram->addUniform("view");  //add a uniform var.
 	shaderProgram->addUniform("projection");
 	
-	renderObjectList.push_back(std::make_unique<Cow>());
-	renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
-	renderObjectList.push_back(std::make_unique<TeaPot>());
-	renderObjectList.push_back(std::make_unique<Sphere>());
 	renderObjectList.push_back(std::make_unique<Cube>());
+	renderObjectList.push_back(std::make_unique<Cow>());
 	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
+	renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
+	renderObjectList.push_back(std::make_unique<Sphere>());
+	renderObjectList.push_back(std::make_unique<TeaPot>());
+	renderObjectList.push_back(std::make_unique<Cat>());
 }

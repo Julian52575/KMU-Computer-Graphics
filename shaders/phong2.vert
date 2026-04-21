@@ -9,11 +9,10 @@ uniform mat4 projection;  //4x4 mat
 uniform mat3 normalMatrix; //transformation matrix for normals	
 
 out vec3 position;
-out vec3  normal;
+out vec3 normal;
 
 void main(void)
 {
-   
    position = vec3(model * vec4(coord3d,1.0));
    normal = normalMatrix * normals;
 
