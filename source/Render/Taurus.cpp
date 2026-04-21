@@ -43,9 +43,6 @@ void Taurus::setupBuffer()
     // Generate the vertex data
     generateVerts(v, n, el, outerRadius, innerRadius);
 
-	//create vao, vbo, ibo here
-    GLuint vbo, nbo, ibo;
-
     glCreateVertexArrays(1, &vaoHandle);
     glCreateBuffers(1, &vbo);   // positions
     glCreateBuffers(1, &nbo);   // normals

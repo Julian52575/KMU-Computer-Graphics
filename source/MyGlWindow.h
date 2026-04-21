@@ -37,7 +37,8 @@ private:
 	int m_height;
 	void initialize();
 
-	std::unique_ptr<IRender> renderObject = nullptr;
+	std::vector<std::unique_ptr<IRender>> renderObjectList;
+	inline void drawRenderObject(std::unique_ptr<IRender>&, glm::mat4& model) const;
 	std::unique_ptr<ShaderProgram> m_shader = nullptr;
 	std::unique_ptr<Program> m_shaderNew = nullptr;
 };

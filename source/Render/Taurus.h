@@ -14,7 +14,7 @@ private:
     int faces, rings, sides;
     float outerRadius, innerRadius;
 	
-	GLuint vbo_cube_vertices, vbo_cube_normals, ibo_cube_elements;
+	GLuint vbo, nbo, ibo;
     void generateVerts(GLfloat*, GLfloat*, unsigned int*,
         float, float);
 

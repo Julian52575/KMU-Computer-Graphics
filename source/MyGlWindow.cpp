@@ -2,6 +2,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "MyGlWindow.h"
 #include <vector>
+#include <algorithm> // for std::transform
+#include <stdexcept> // for std::invalid_argument
 
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -10,6 +12,7 @@
 #include "Render/TeaPot.h"
 #include "Render/Sphere.h"
 #include "Render/Taurus.h"
+#include "Render/Bunny.h"
 
 static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
@@ -19,7 +22,7 @@ static float DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 std::unique_ptr<ShaderProgram> shaderProgram = nullptr;
 std::unique_ptr<Program> program = nullptr;
  
-MyGlWindow::MyGlWindow(int w, int h) : renderObject(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32))
+MyGlWindow::MyGlWindow(int w, int h)
 //==========================================================================
 {
 	m_width = w;
@@ -33,7 +36,6 @@ MyGlWindow::MyGlWindow(int w, int h) : renderObject(std::make_unique<Taurus>(1.0
 	//fix it to use smart pointers
 	m_viewer = std::make_unique<Viewer>(viewPoint, viewCenter, upVector, 60.0, aspect);
 	
-
 	initialize();
 }
 
@@ -95,22 +97,11 @@ glm::mat4 perspective(float fov, float aspect, float n, float f)
 }
 
 
-
-void MyGlWindow::draw(void)
+inline void MyGlWindow::drawRenderObject(std::unique_ptr<IRender>& renderObject, glm::mat4& model) const
 {
-
 	glm::vec3 eye = m_viewer->getViewPoint(); // m_viewer->getViewPoint().x(), m_viewer->getViewPoint().y(), m_viewer->getViewPoint().z());
 	glm::vec3 look = m_viewer->getViewCenter();   //(m_viewer->getViewCenter().x(), m_viewer->getViewCenter().y(), m_viewer->getViewCenter().z());
 	glm::vec3 up = m_viewer->getUpVector(); // m_viewer->getUpVector().x(), m_viewer->getUpVector().y(), m_viewer->getUpVector().z());
-
-
-	glm::mat4 model(1.0);
-
-	// Rotate if renderObject is a TeaPot
-	if (TeaPot* d = dynamic_cast<TeaPot*>(renderObject.get())) {
-		model = glm::rotate(model, glm::radians(180 + 90.0f), glm::vec3(1, 0, 0));
-		// ptr successfully confirmed to point to a TeaPot object
-	}
 
 	glm::mat4 view = glm::lookAt(eye, look, up);
 
@@ -150,7 +141,24 @@ void MyGlWindow::draw(void)
 	program->SetVector("lightPos", lightPos);
 	renderObject->draw();
 	program->UnbindProgram();
+}
 
+#define RENDER_OBJECT_SPACING  15.0f
+void MyGlWindow::draw(void)
+{
+	decltype(renderObjectList)::size_type i = 0;
+
+	for (auto& it : renderObjectList) {
+		glm::mat4 model(1.0);
+
+		model = glm::translate(model, glm::vec3(RENDER_OBJECT_SPACING * i, 0.0f, 0.0f)); // move right
+		// Rotate if renderObject is a TeaPot
+		if (TeaPot* d = dynamic_cast<TeaPot*>(it.get())) {
+			model = glm::rotate(model, glm::radians(180 + 90.0f), glm::vec3(1, 0, 0));
+		}
+		drawRenderObject(it, model);
+		i++;
+	}
 }
 
 MyGlWindow::~MyGlWindow()
@@ -183,4 +191,9 @@ void MyGlWindow::initialize()
 	shaderProgram->addUniform("view");  //add a uniform var.
 	shaderProgram->addUniform("projection");
 	
+	renderObjectList.push_back(std::make_unique<Cow>());
+	renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
+	renderObjectList.push_back(std::make_unique<TeaPot>());
+	renderObjectList.push_back(std::make_unique<Sphere>());
+	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
 }

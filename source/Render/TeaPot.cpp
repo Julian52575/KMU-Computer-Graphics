@@ -9,7 +9,6 @@
 //==========================================================================
 TeaPot::TeaPot() : vboTeapot(std::make_unique<VBOTeapot>(64, glm::mat4(1.0f)))
 {
-	std::cout << "TeaPot created" << std::endl;
 }
 
 void TeaPot::calculateNormal()
