@@ -135,15 +135,26 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
 
 	program->BindProgram();
-	program->SetMatrix("model", model);
-	program->SetMatrix("view", view);
-	program->SetMatrix("projection", projection);
-	program->SetMatrix("normalMatrix", normalMatrix);
-
-	program->SetVector("viewPos", eye);
-	program->SetVector("lightPos", lightPos);
-
-	program->SetMaterial("material", renderObject.material);
+	//// Phong2
+	//program->SetMatrix("model", model);
+	//program->SetMatrix("view", view);
+	//program->SetMatrix("projection", projection);
+	//program->SetMatrix("normalMatrix", normalMatrix);
+	//program->SetVector("viewPos", eye);
+	//program->SetVector("lightPos", lightPos);
+	//program->SetMaterial("material", renderObject.material);
+	//// Phong1
+	// vert
+	program->SetMatrix("ModelViewMatrix", mview);
+	program->SetMatrix("NormalMatrix", normalMatrix);
+	program->SetMatrix("MVP", mvp);
+	// frag
+	program->SetVector("LightPosition", lightPos);
+	program->SetVector("LightIntensity", glm::vec3(1.0f, 1.0f, 1.0f));
+	program->SetVector("Kd", renderObject.material.diffuseColor);
+	program->SetVector("Ka", renderObject.material.ambientColor);
+	program->SetVector("Ks", renderObject.material.specularColor);
+	program->SetFloat("shiness", renderObject.material.shininess);
 
 	renderObject.draw();
 	program->UnbindProgram();
@@ -186,7 +197,7 @@ MyGlWindow::~MyGlWindow()
 void MyGlWindow::initialize()
 {
 	try {
-		program = std::unique_ptr<Program>(Program::GenerateFromFileVsFs("../../shaders/phong2.vert", "../../shaders/phong2.frag"));
+		program = std::unique_ptr<Program>(Program::GenerateFromFileVsFs("../../shaders/phong.vert", "../../shaders/phong.frag"));
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << "SHADER ERROR: " << e.what() << std::endl;
