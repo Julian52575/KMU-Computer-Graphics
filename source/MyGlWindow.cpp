@@ -151,7 +151,7 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	program->UnbindProgram();
 }
 
-#define RENDER_OBJECT_SPACING  15.0f
+#define RENDER_OBJECT_SPACING  5.0f
 void MyGlWindow::draw(void)
 {
 	decltype(renderObjectList)::size_type i = 0;
@@ -160,9 +160,14 @@ void MyGlWindow::draw(void)
 		glm::mat4 model(1.0);
 
 		model = glm::translate(model, glm::vec3(RENDER_OBJECT_SPACING * i, 0.0f, 0.0f)); // move right
-		// Rotate if renderObject is a TeaPot
+		// Transforms for specific objects
 		if (TeaPot* d = dynamic_cast<TeaPot*>((*it).get())) {
 			model = glm::rotate(model, glm::radians(180 + 90.0f), glm::vec3(1, 0, 0));
+		}
+		else if (Taurus* d = dynamic_cast<Taurus*>((*it).get())) {
+			model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+			model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f)); // move up
+			model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f)); // scale up
 		}
 		drawRenderObject(*(*it).get(), model);
 		i++;
@@ -212,8 +217,8 @@ void MyGlWindow::initialize()
 	renderObjectList.push_back(std::make_unique<Cube>());
 	renderObjectList.push_back(std::make_unique<Cow>());
 	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
-	renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
 	renderObjectList.push_back(std::make_unique<Sphere>());
 	renderObjectList.push_back(std::make_unique<TeaPot>());
+	renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
 	renderObjectList.push_back(std::make_unique<Cat>());
 }
