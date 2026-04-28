@@ -49,7 +49,17 @@ void CheckedFloor::setupBuffer()
 				}
 			);
 			// COLORS
-			if ((x + z) % 2) {
+			if (not checkered) {
+				colors.insert(colors.end(),
+					{
+						1.0, 1.0, 1.0,
+						1.0, 1.0, 1.0,
+						1.0, 1.0, 1.0,
+						1.0, 1.0, 1.0
+					}
+				);
+			}
+			else if ((x + z) % 2) {
 				colors.insert(colors.end(),
 					{
 						0.0, 0.0, 0.0,

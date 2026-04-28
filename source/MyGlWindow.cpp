@@ -135,20 +135,11 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
 
 	program->BindProgram();
-	//// Phong2
-	//program->SetMatrix("model", model);
-	//program->SetMatrix("view", view);
-	//program->SetMatrix("projection", projection);
-	//program->SetMatrix("normalMatrix", normalMatrix);
-	//program->SetVector("viewPos", eye);
-	//program->SetVector("lightPos", lightPos);
-	//program->SetMaterial("material", renderObject.material);
-	//// Phong1
-	// vert
+	/// vert
 	program->SetMatrix("ModelViewMatrix", mview);
 	program->SetMatrix("NormalMatrix", normalMatrix);
 	program->SetMatrix("MVP", mvp);
-	// frag
+	/// frag
 	program->SetVector("LightPosition", lightPos);
 	program->SetVector("LightIntensity", glm::vec3(1.0f, 1.0f, 1.0f));
 	program->SetVector("Kd", renderObject.material.diffuseColor);

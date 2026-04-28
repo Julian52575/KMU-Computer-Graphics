@@ -20,6 +20,7 @@ public:
 	unsigned int m_checksize_z;
 	unsigned int m_width;
 	unsigned int m_height;
+	bool checkered = false;
 
 private:
 	void setupBuffer() override;
