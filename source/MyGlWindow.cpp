@@ -25,7 +25,9 @@ static float DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 std::unique_ptr<ShaderProgram> shaderProgram = nullptr;
 std::unique_ptr<Program> program = nullptr;
  
-MyGlWindow::MyGlWindow(int w, int h) : renderFloor(CheckedFloor(33, 33, 5.0f, 2.5f))
+MyGlWindow::MyGlWindow(int w, int h)
+	: renderFloor(CheckedFloor(33, 33, 5.0f, 2.5f)),
+	fragShaderName("phong"), vertShaderName("phong")
 //==========================================================================
 {
 	m_width = w;
@@ -135,17 +137,23 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
 
 	program->BindProgram();
-	/// vert
-	program->SetMatrix("ModelViewMatrix", mview);
-	program->SetMatrix("NormalMatrix", normalMatrix);
-	program->SetMatrix("MVP", mvp);
-	/// frag
-	program->SetVector("LightPosition", lightPos);
-	program->SetVector("LightIntensity", glm::vec3(1.0f, 1.0f, 1.0f));
-	program->SetVector("Kd", renderObject.material.diffuseColor);
-	program->SetVector("Ka", renderObject.material.ambientColor);
-	program->SetVector("Ks", renderObject.material.specularColor);
-	program->SetFloat("shiness", renderObject.material.shininess);
+	/// Vert tests
+	if (vertShaderName == "phong") {
+		program->SetMatrix("ModelViewMatrix", mview);
+		program->SetMatrix("NormalMatrix", normalMatrix);
+		program->SetMatrix("MVP", mvp);
+	}
+	// Frag tests
+	if (fragShaderName == "phong") {
+		program->SetVector("LightPosition", lightPos);
+		program->SetVector("LightIntensity", glm::vec3(1.0f, 1.0f, 1.0f));
+		program->SetVector("Kd", renderObject.material.diffuseColor);
+		program->SetVector("Ka", renderObject.material.ambientColor);
+		program->SetVector("Ks", renderObject.material.specularColor);
+		program->SetFloat("shiness", renderObject.material.shininess);
+	}
+
+
 
 	renderObject.draw();
 	program->UnbindProgram();
@@ -189,11 +197,15 @@ MyGlWindow::~MyGlWindow()
 
 }
 
+const std::string SHADER_PATH = std::string("../../shaders/");
 
 void MyGlWindow::initialize()
 {
 	try {
-		program = std::unique_ptr<Program>(Program::GenerateFromFileVsFs("../../shaders/phong.vert", "../../shaders/phong.frag"));
+
+		program = std::unique_ptr<Program>(
+			Program::GenerateFromFileVsFs(
+				SHADER_PATH + vertShaderName + ".vert", SHADER_PATH + fragShaderName + ".frag"));
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << "SHADER ERROR: " << e.what() << std::endl;

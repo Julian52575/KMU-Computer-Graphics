@@ -36,6 +36,8 @@ private:
 	int m_width;
 	int m_height;
 	void initialize();
+	const std::string fragShaderName;
+	const std::string vertShaderName;
 
 	CheckedFloor renderFloor;
 	std::vector<std::unique_ptr<ARender>> renderObjectList;
