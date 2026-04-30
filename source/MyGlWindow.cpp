@@ -27,7 +27,7 @@ std::unique_ptr<Program> program = nullptr;
  
 MyGlWindow::MyGlWindow(int w, int h)
 	: renderFloor(CheckedFloor(33, 33, 5.0f, 2.5f)),
-	fragShaderName("phong"), vertShaderName("phong")
+	fragShaderName("spotlightPhong"), vertShaderName("phong")
 //==========================================================================
 {
 	m_width = w;
@@ -107,31 +107,10 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	glm::vec3 eye = m_viewer->getViewPoint(); // m_viewer->getViewPoint().x(), m_viewer->getViewPoint().y(), m_viewer->getViewPoint().z());
 	glm::vec3 look = m_viewer->getViewCenter();   //(m_viewer->getViewCenter().x(), m_viewer->getViewCenter().y(), m_viewer->getViewCenter().z());
 	glm::vec3 up = m_viewer->getUpVector(); // m_viewer->getUpVector().x(), m_viewer->getUpVector().y(), m_viewer->getUpVector().z());
-
 	glm::mat4 view = glm::lookAt(eye, look, up);
-
-
 	glm::mat4 projection = glm::perspective(45.0f, 1.0f * m_width / m_height, 0.1f, 500.0f);
-
 	glm::mat4 mview = view * model;
 	glm::mat4 mvp = projection * view * model;
-
-
-	/*
-	shaderProgram->use();
-
-
-		glUniformMatrix4fv(shaderProgram->uniform("model"), 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(shaderProgram->uniform("view"), 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(shaderProgram->uniform("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-		if (m_cube) m_cube->draw();
-
-
-	shaderProgram->disable();
-	*/
-
-	glm::vec3 lightPos(10.0f, 10.0f, 10.0f);
 
 	//normal matrix in world space
 	glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
@@ -145,16 +124,24 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	}
 	// Frag tests
 	if (fragShaderName == "phong") {
-		program->SetVector("LightPosition", lightPos);
-		program->SetVector("LightIntensity", glm::vec3(1.0f, 1.0f, 1.0f));
+		program->SetVector("LightPosition", spotLight.position);
+		program->SetVector("LightIntensity", spotLight.intensity);
+	}
+	if (fragShaderName == "phong" || fragShaderName == "spotlightPhong") {
 		program->SetVector("Kd", renderObject.material.diffuseColor);
 		program->SetVector("Ka", renderObject.material.ambientColor);
 		program->SetVector("Ks", renderObject.material.specularColor);
 		program->SetFloat("shiness", renderObject.material.shininess);
 	}
-
-
-
+	if (fragShaderName == "spotlightPhong") {
+		program->SetVector("spot.position", // mview * 
+			spotLight.position);  //light position
+		program->SetVector("spot.intensity", spotLight.intensity);  //light color
+		program->SetVector("spot.direction", spotLight.direction); //light direction
+		program->SetFloat("spot.exponent", spotLight.exponent); //How much light diminish as it goes from center to the edge
+		program->SetFloat("spot.cutoff", spotLight.cutoff); //outer cone angle
+		program->SetFloat("spot.innerCutoff", spotLight.innerCutoff);  //inner cone angle
+	}
 	renderObject.draw();
 	program->UnbindProgram();
 }
@@ -233,4 +220,9 @@ void MyGlWindow::initialize()
 	renderObjectList.push_back(std::make_unique<TeaPot>());
 	renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
 	renderObjectList.push_back(std::make_unique<Cat>());
+	// Spot Light
+	spotLight.position = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	spotLight.intensity = glm::vec3(1.0f, 1.0f, 1.0f);
+	spotLight.cutoff = 15.0f;
+	spotLight.innerCutoff = 5.0f;
 }
