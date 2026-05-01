@@ -303,9 +303,9 @@ void Program::SetMaterial(const std::string& name, const Material& material)
 {
 	ValidateSetUniform(name);
 
-	this->SetVector(name + ".ambientColor", material.ambientColor);
-	this->SetVector(name + ".diffuseColor", material.ambientColor);
-	this->SetVector(name + ".specularColor", material.ambientColor);
+	this->SetVector(name + ".Kd", material.ambientColor);
+	this->SetVector(name + ".Ka", material.ambientColor);
+	this->SetVector(name + ".Ks", material.ambientColor);
 	this->SetFloat(name + ".shininess", material.shininess);
 }
 

@@ -125,22 +125,21 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	// Frag tests
 	if (fragShaderName == "phong") {
 		program->SetVector("LightPosition", spotLight.position);
-		program->SetVector("LightIntensity", spotLight.intensity);
+		program->SetVector("LightIntensity", glm::vec3(spotLight.intensity));
 	}
 	if (fragShaderName == "phong" || fragShaderName == "spotlightPhong") {
-		program->SetVector("Kd", renderObject.material.diffuseColor);
-		program->SetVector("Ka", renderObject.material.ambientColor);
-		program->SetVector("Ks", renderObject.material.specularColor);
-		program->SetFloat("shiness", renderObject.material.shininess);
+		program->SetMaterial("objectMaterial", renderObject.material);
 	}
 	if (fragShaderName == "spotlightPhong") {
-		program->SetVector("spot.position", // mview * 
+		program->SetVector("spot.position",
 			spotLight.position);  //light position
-		program->SetVector("spot.intensity", spotLight.intensity);  //light color
-		program->SetVector("spot.direction", spotLight.direction); //light direction
+		program->SetVector("spot.direction", 
+			spotLight.direction); //light direction
+		program->SetVector("spot.intensity", glm::vec3(spotLight.intensity));  //light color
 		program->SetFloat("spot.exponent", spotLight.exponent); //How much light diminish as it goes from center to the edge
 		program->SetFloat("spot.cutoff", spotLight.cutoff); //outer cone angle
 		program->SetFloat("spot.innerCutoff", spotLight.innerCutoff);  //inner cone angle
+		program->SetMaterial("spot.material", spotLight.material);
 	}
 	renderObject.draw();
 	program->UnbindProgram();
@@ -204,7 +203,6 @@ void MyGlWindow::initialize()
 		exit(1);
 	}
 
-	
 	shaderProgram = std::make_unique<ShaderProgram>();
 	//load shaders
 	shaderProgram->initFromFiles("../../shaders/simple.vert", "../../shaders/simple.frag");
@@ -212,7 +210,7 @@ void MyGlWindow::initialize()
 	shaderProgram->addUniform("model");  //add a uniform var.
 	shaderProgram->addUniform("view");  //add a uniform var.
 	shaderProgram->addUniform("projection");
-	
+
 	renderObjectList.push_back(std::make_unique<Cube>());
 	renderObjectList.push_back(std::make_unique<Cow>());
 	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
@@ -221,8 +219,5 @@ void MyGlWindow::initialize()
 	renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
 	renderObjectList.push_back(std::make_unique<Cat>());
 	// Spot Light
-	spotLight.position = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	spotLight.intensity = glm::vec3(1.0f, 1.0f, 1.0f);
-	spotLight.cutoff = 15.0f;
-	spotLight.innerCutoff = 5.0f;
+	//spotLight.position = glm::vec4(10.0f, 10.0f, 5.0f, 1.0f);
 }

@@ -23,12 +23,18 @@
 
 
 struct SpotLight {
-	glm::vec4 position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	glm::vec3 intensity = glm::vec3(1.0f, 1.0f, 1.0f);
-	glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f);
-	float exponent = 1.0f;
-	float cutoff = 45.0f;
-	float innerCutoff = 30.0f;
+	glm::vec4 position = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	float intensity = 1.0f;
+	glm::vec3 direction = glm::vec3(0.1f, -1.0f, 0.0f);
+	Material material = {
+		glm::vec3(1.5f, 1.0f, 1.0f), // ambient color
+		glm::vec3(1.0f, 1.0f, 1.0f), // diffuse color
+		glm::vec3(1.0f, 1.0f, 1.0f), // specular color
+		42.84f                         // unused
+	};
+	float exponent = 10.0f;
+	float cutoff = 30.0;
+	float innerCutoff = 30.0f * 0.7f;
 };
 
 class MyGlWindow {
