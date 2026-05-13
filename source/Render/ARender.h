@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <string>
+#include <optional>
+#include <utility>
 
 #include <glm/fwd.hpp>
 #include "glm/glm.hpp"
@@ -26,6 +28,7 @@ public:
 public:
 	virtual ~ARender() {};
 	virtual void draw() = 0;
+	GLuint textureHandle = static_cast<GLuint>(-1);
 
 private:
 	virtual inline void setupBuffer() = 0;

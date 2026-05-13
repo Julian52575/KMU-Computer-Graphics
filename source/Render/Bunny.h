@@ -5,13 +5,14 @@
 #include <iostream>
 #include <GL/gl3w.h>
 #include <string>
+
 #include "Loader.h"
 #include "ARender.h"
 
 class Bunny : public ARender {
 public:
 	Bunny();
-	~Bunny() = default;
+	~Bunny();
 	void draw() override;
 
 private:
@@ -23,4 +24,7 @@ private:
 	GLuint vaoHandle;
 	GLuint vbo_vertices, vbo_normals, ibo_elements;
 	std::vector<glm::vec3> normals;
+
+	unsigned char* textureImage = nullptr;
+	int textureWidth, textureHeight, textureChannel = 0;
 };

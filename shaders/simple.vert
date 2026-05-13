@@ -7,9 +7,6 @@ uniform mat4 model;  //4x4 mat
 uniform mat4 view;  //4x4 mat
 uniform mat4 projection;  //4x4 mat
 
-
-
-
 out vec3 color;
 void main(void)
 {

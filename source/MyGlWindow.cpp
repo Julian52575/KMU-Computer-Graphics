@@ -27,12 +27,10 @@ std::unique_ptr<Program> program = nullptr;
  
 MyGlWindow::MyGlWindow(int w, int h)
 	: renderFloor(CheckedFloor(33, 33, 5.0f, 2.5f)),
-	fragShaderName("spotlightPhong"), vertShaderName("phong")
+	fragShaderName("uv"), vertShaderName("uv"),
+	m_width(w), m_height(h)
 //==========================================================================
 {
-	m_width = w;
-	m_height = h;
-
 	glm::vec3 viewPoint(DEFAULT_VIEW_POINT[0], DEFAULT_VIEW_POINT[1], DEFAULT_VIEW_POINT[2]);
 	glm::vec3 viewCenter(DEFAULT_VIEW_CENTER[0], DEFAULT_VIEW_CENTER[1], DEFAULT_VIEW_CENTER[2]);
 	glm::vec3 upVector(DEFAULT_UP_VECTOR[0], DEFAULT_UP_VECTOR[1], DEFAULT_UP_VECTOR[2]);
@@ -108,7 +106,7 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	glm::vec3 look = m_viewer->getViewCenter();   //(m_viewer->getViewCenter().x(), m_viewer->getViewCenter().y(), m_viewer->getViewCenter().z());
 	glm::vec3 up = m_viewer->getUpVector(); // m_viewer->getUpVector().x(), m_viewer->getUpVector().y(), m_viewer->getUpVector().z());
 	glm::mat4 view = glm::lookAt(eye, look, up);
-	glm::mat4 projection = glm::perspective(45.0f, 1.0f * m_width / m_height, 0.1f, 500.0f);
+	glm::mat4 projection = glm::perspective(45.0f, 1.0f * m_width / m_height, 0.1f, 5000.0f);
 	glm::mat4 mview = view * model;
 	glm::mat4 mvp = projection * view * model;
 
@@ -116,12 +114,9 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
 
 	program->BindProgram();
-	/// Vert tests
-	if (vertShaderName == "phong") {
-		program->SetMatrix("ModelViewMatrix", mview);
-		program->SetMatrix("NormalMatrix", normalMatrix);
-		program->SetMatrix("MVP", mvp);
-	}
+	program->SetMatrix("model", model);
+	program->SetMatrix("NormalMatrix", normalMatrix);
+	program->SetMatrix("MVP", mvp);
 	// Frag tests
 	if (fragShaderName == "phong") {
 		program->SetVector("LightPosition", spotLight.position);
@@ -140,6 +135,13 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 		program->SetFloat("spot.cutoff", spotLight.cutoff); //outer cone angle
 		program->SetFloat("spot.innerCutoff", spotLight.innerCutoff);  //inner cone angle
 		program->SetMaterial("spot.material", spotLight.material);
+	}
+	// UV
+	if (fragShaderName == "uv") {
+		if (renderObject.textureHandle != static_cast<GLuint>(-1)) {
+			//std::cout << "Set tex to " << renderObject.textureHandle << std::endl;
+			program->SetTexture("tex", renderObject.textureHandle);
+		}
 	}
 	renderObject.draw();
 	program->UnbindProgram();
@@ -166,6 +168,7 @@ void MyGlWindow::draw(void)
 		drawRenderObject(*(*it).get(), model);
 		i++;
 	}
+	/*
 	glm::mat4 model(1.0);
 
 	model = glm::translate(model,
@@ -176,6 +179,7 @@ void MyGlWindow::draw(void)
 		)
 	);
 	drawRenderObject(renderFloor, model);
+	*/
 }
 
 MyGlWindow::~MyGlWindow()
@@ -188,7 +192,6 @@ const std::string SHADER_PATH = std::string("../../shaders/");
 void MyGlWindow::initialize()
 {
 	try {
-
 		program = std::unique_ptr<Program>(
 			Program::GenerateFromFileVsFs(
 				SHADER_PATH + vertShaderName + ".vert", SHADER_PATH + fragShaderName + ".frag"));
@@ -203,6 +206,7 @@ void MyGlWindow::initialize()
 		exit(1);
 	}
 
+	/*
 	shaderProgram = std::make_unique<ShaderProgram>();
 	//load shaders
 	shaderProgram->initFromFiles("../../shaders/simple.vert", "../../shaders/simple.frag");
@@ -210,14 +214,15 @@ void MyGlWindow::initialize()
 	shaderProgram->addUniform("model");  //add a uniform var.
 	shaderProgram->addUniform("view");  //add a uniform var.
 	shaderProgram->addUniform("projection");
+	*/
 
-	renderObjectList.push_back(std::make_unique<Cube>());
-	renderObjectList.push_back(std::make_unique<Cow>());
-	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
-	renderObjectList.push_back(std::make_unique<Sphere>());
-	renderObjectList.push_back(std::make_unique<TeaPot>());
-	renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
-	renderObjectList.push_back(std::make_unique<Cat>());
+	//renderObjectList.push_back(std::make_unique<Cube>());
+	//renderObjectList.push_back(std::make_unique<Cow>());
+	renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
+	//renderObjectList.push_back(std::make_unique<Sphere>());
+	//renderObjectList.push_back(std::make_unique<TeaPot>());
+	//renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
+	///renderObjectList.push_back(std::make_unique<Cat>());
 	// Spot Light
-	//spotLight.position = glm::vec4(10.0f, 10.0f, 5.0f, 1.0f);
+	spotLight.position = glm::vec4(10.0f, 10.0f, 5.0f, 1.0f);
 }

@@ -7,14 +7,14 @@ out vec3 PositionInCamera;
 out vec4 glPosition;
 out vec3 Normal;
 
-uniform mat4 ModelViewMatrix;
+uniform mat4 model;
 uniform mat3 NormalMatrix;
 uniform mat4 MVP;
 
 void main(void)
 {
 	// Position in Camera Coordinate
-	PositionInCamera = vec3(ModelViewMatrix * vec4(VertexPosition, 1.0));
+	PositionInCamera = vec3(model * vec4(VertexPosition, 1.0));
 	// Transform the Normals
 	Normal = normalize(NormalMatrix * VertexNormal);
 	
