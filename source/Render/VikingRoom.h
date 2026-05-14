@@ -2,18 +2,17 @@
 
 #pragma once
 
-#include <GL/gl3w.h>
 #include <iostream>
+#include <GL/gl3w.h>
 #include <string>
 
 #include "Loader.h"
-
 #include "ARender.h"
 
-class Bunny : public ARender {
+class VikingRoom : public ARender {
 public:
-	Bunny();
-	~Bunny();
+	VikingRoom();
+	~VikingRoom();
 	void draw() override;
 
 private:

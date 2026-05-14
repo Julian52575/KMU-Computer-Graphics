@@ -12,6 +12,14 @@ struct Material {
 };
 
 // 💎 Emerald
+const Material defaultMaterial = {
+    {0.1, 0.1, 0.1},
+    {0.1, 0.1, 0.1},
+    {0.1, 0.1, 0.1},
+    10
+};
+
+// 💎 Emerald
 const Material emerald = {
     {0.0215f, 0.1745f, 0.0215f},
     {0.07568f, 0.61424f, 0.07568f},

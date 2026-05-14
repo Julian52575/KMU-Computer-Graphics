@@ -10,6 +10,8 @@
 #include <glm/fwd.hpp>
 #include "glm/glm.hpp"
 
+#include "stb_image.h"
+
 #include "Materials/Materials.h"
 
 class ARender {

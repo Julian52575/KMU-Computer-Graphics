@@ -5,21 +5,22 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "Bunny.h"
-#include "models/bunny2.h"
+#include "VikingRoom.h"
+#include "models/viking_room.h"
 
 //==========================================================================
-Bunny::Bunny() : ARender("Bunny")
+VikingRoom::VikingRoom() : ARender("VikingRoom", defaultMaterial)
 {
-	this->textureImage = stbi_load("../../textures/BunnyTex.png", &textureWidth, &textureHeight, &textureChannel, 0);
+	stbi_set_flip_vertically_on_load(true);
+	this->textureImage = stbi_load("../../textures/VikingRoomTex.png", &textureWidth, &textureHeight, &textureChannel, 0);
+	stbi_set_flip_vertically_on_load(false);
 	if (not this->textureImage) {
-		throw std::runtime_error("Cannot stbi_load '../../textures/BunnyTex.png' !");
+		throw std::runtime_error("Cannot stbi_load '../../textures/VikingRoomTex.png' !");
 	}
 	this->init();
 }
 
-Bunny::~Bunny()
+VikingRoom::~VikingRoom()
 {
 	if (this->textureImage) {
 		stbi_image_free(this->textureImage);
@@ -27,7 +28,7 @@ Bunny::~Bunny()
 	}
 }
 
-inline void Bunny::setupBuffer()
+inline void VikingRoom::setupBuffer()
 {
 	/* DSA
 	*/
@@ -77,7 +78,7 @@ inline void Bunny::setupBuffer()
 	glVertexArrayElementBuffer(vaoHandle, handle[1]);
 }
 
-void Bunny::draw()
+void VikingRoom::draw()
 {
 	glBindTexture(GL_TEXTURE_2D, textureHandle);
 	glBindVertexArray(vaoHandle);

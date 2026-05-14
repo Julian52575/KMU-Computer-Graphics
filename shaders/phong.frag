@@ -1,7 +1,7 @@
 #version 400
 
-in vec3 PositionInCamera;
-in vec3 Normal;
+in vec3 positionInCamera;
+in vec3 normal;
 uniform vec4 LightPosition;
 uniform vec3 LightIntensity; //Ia=Id=Is
 
@@ -17,9 +17,9 @@ out vec4 FragColor;
 
 void main()
 {
-	vec3 N = normalize(Normal);
-	vec3 L = normalize(vec3(LightPosition) - PositionInCamera);
-	vec3 V = normalize(-PositionInCamera);
+	vec3 N = normalize(normal);
+	vec3 L = normalize(vec3(LightPosition) - positionInCamera);
+	vec3 V = normalize(-positionInCamera);
 	vec3 R = reflect(-L, N);
 	vec3 diffuse = objectMaterial.Kd * LightIntensity * max(dot(N, L), 0.0);
 	vec3 ambient = objectMaterial.Ka * LightIntensity;

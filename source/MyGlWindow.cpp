@@ -13,9 +13,11 @@
 #include "Render/Cow.h"
 #include "Render/TeaPot.h"
 #include "Render/Sphere.h"
+#include "Render/Globe.h"
 #include "Render/Taurus.h"
 #include "Render/Bunny.h"
 #include "Render/Cat.h"
+#include "Render/VikingRoom.h"
 
 static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
@@ -106,7 +108,7 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	glm::vec3 look = m_viewer->getViewCenter();   //(m_viewer->getViewCenter().x(), m_viewer->getViewCenter().y(), m_viewer->getViewCenter().z());
 	glm::vec3 up = m_viewer->getUpVector(); // m_viewer->getUpVector().x(), m_viewer->getUpVector().y(), m_viewer->getUpVector().z());
 	glm::mat4 view = glm::lookAt(eye, look, up);
-	glm::mat4 projection = glm::perspective(45.0f, 1.0f * m_width / m_height, 0.1f, 5000.0f);
+	glm::mat4 projection = glm::perspective(45.0f, 1.0f * m_width / m_height, 0.1f, 500.0f);
 	glm::mat4 mview = view * model;
 	glm::mat4 mvp = projection * view * model;
 
@@ -118,11 +120,11 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	program->SetMatrix("NormalMatrix", normalMatrix);
 	program->SetMatrix("MVP", mvp);
 	// Frag tests
-	if (fragShaderName == "phong") {
+	if (fragShaderName == "phong" || fragShaderName == "uv") {
 		program->SetVector("LightPosition", spotLight.position);
 		program->SetVector("LightIntensity", glm::vec3(spotLight.intensity));
 	}
-	if (fragShaderName == "phong" || fragShaderName == "spotlightPhong") {
+	if (fragShaderName == "phong" || fragShaderName == "spotlightPhong" || fragShaderName == "uv") {
 		program->SetMaterial("objectMaterial", renderObject.material);
 	}
 	if (fragShaderName == "spotlightPhong") {
@@ -143,6 +145,9 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 			program->SetTexture("tex", renderObject.textureHandle);
 		}
 	}
+
+	program->SetBool("hasTexture", renderObject.textureHandle != -1);
+
 	renderObject.draw();
 	program->UnbindProgram();
 }
@@ -150,13 +155,17 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 #define RENDER_OBJECT_SPACING  5.0f
 void MyGlWindow::draw(void)
 {
+	bool hadBunny = false;
 	decltype(renderObjectList)::size_type i = 0;
 
 	for (auto it = renderObjectList.rbegin(); it != renderObjectList.rend(); ++it) {
 		glm::mat4 model(1.0);
 
-		model = glm::translate(model, glm::vec3(RENDER_OBJECT_SPACING * i, 0.0f, 0.0f)); // move right
-		// Transforms for specific objects
+		model = glm::translate(model,
+			glm::vec3(
+				RENDER_OBJECT_SPACING * i + (hadBunny ? 500 : 0),
+				0.0f, 0.0f)); // move right
+		// Rotate for specific objects
 		if (TeaPot* d = dynamic_cast<TeaPot*>((*it).get())) {
 			model = glm::rotate(model, glm::radians(180 + 90.0f), glm::vec3(1, 0, 0));
 		}
@@ -165,10 +174,18 @@ void MyGlWindow::draw(void)
 			model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f)); // move up
 			model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f)); // scale up
 		}
+		else if (VikingRoom* d = dynamic_cast<VikingRoom*>((*it).get())) {
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.1f)); // move up
+		}
 		drawRenderObject(*(*it).get(), model);
+		if ((*it)->name == "Bunny") {
+			hadBunny = true;
+		}
 		i++;
 	}
 	/*
+	*/
 	glm::mat4 model(1.0);
 
 	model = glm::translate(model,
@@ -179,7 +196,6 @@ void MyGlWindow::draw(void)
 		)
 	);
 	drawRenderObject(renderFloor, model);
-	*/
 }
 
 MyGlWindow::~MyGlWindow()
@@ -218,11 +234,14 @@ void MyGlWindow::initialize()
 
 	//renderObjectList.push_back(std::make_unique<Cube>());
 	//renderObjectList.push_back(std::make_unique<Cow>());
-	renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
+	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
+	renderObjectList.push_back(std::make_unique<VikingRoom>());
+	//renderObjectList.push_back(std::make_unique<Globe>());
 	//renderObjectList.push_back(std::make_unique<Sphere>());
 	//renderObjectList.push_back(std::make_unique<TeaPot>());
 	//renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
 	///renderObjectList.push_back(std::make_unique<Cat>());
 	// Spot Light
-	spotLight.position = glm::vec4(10.0f, 10.0f, 5.0f, 1.0f);
+	spotLight.position = glm::vec4(00.0f, 20.0f, 0.0f, 1.0f);
+	spotLight.intensity = 0.5f;
 }
