@@ -18,6 +18,7 @@
 #include "Render/Bunny.h"
 #include "Render/Cat.h"
 #include "Render/VikingRoom.h"
+#include "Render/Ogre.h"
 
 static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
@@ -140,13 +141,16 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	}
 	// UV
 	if (fragShaderName == "uv") {
+		program->SetBool("hasTexture", renderObject.textureHandle != -1);
+		program->SetBool("hasNormalMask", renderObject.normalMaskTextureHandle != -1);
 		if (renderObject.textureHandle != static_cast<GLuint>(-1)) {
 			//std::cout << "Set tex to " << renderObject.textureHandle << std::endl;
-			program->SetTexture("tex", renderObject.textureHandle);
+			program->SetTexture("textureId", renderObject.textureHandle);
+		}
+		if (renderObject.textureHandle != static_cast<GLuint>(-1)) {
+			program->SetTexture("normalMaskTextureId", renderObject.normalMaskTextureHandle);
 		}
 	}
-
-	program->SetBool("hasTexture", renderObject.textureHandle != -1);
 
 	renderObject.draw();
 	program->UnbindProgram();
@@ -177,6 +181,9 @@ void MyGlWindow::draw(void)
 		else if (VikingRoom* d = dynamic_cast<VikingRoom*>((*it).get())) {
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
 			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.1f)); // move up
+		}
+		else if (Ogre* d = dynamic_cast<Ogre*>((*it).get())) {
+			model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.0f)); // move up
 		}
 		drawRenderObject(*(*it).get(), model);
 		if ((*it)->name == "Bunny") {
@@ -236,6 +243,7 @@ void MyGlWindow::initialize()
 	//renderObjectList.push_back(std::make_unique<Cow>());
 	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
 	renderObjectList.push_back(std::make_unique<VikingRoom>());
+	renderObjectList.push_back(std::make_unique<Ogre>());
 	//renderObjectList.push_back(std::make_unique<Globe>());
 	//renderObjectList.push_back(std::make_unique<Sphere>());
 	//renderObjectList.push_back(std::make_unique<TeaPot>());
