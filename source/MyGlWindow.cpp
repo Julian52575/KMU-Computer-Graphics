@@ -30,7 +30,7 @@ std::unique_ptr<Program> program = nullptr;
  
 MyGlWindow::MyGlWindow(int w, int h)
 	: renderFloor(CheckedFloor(33, 33, 5.0f, 2.5f)),
-	fragShaderName("uv"), vertShaderName("uv"),
+	fragShaderName("toon"), vertShaderName("toon"),
 	m_width(w), m_height(h)
 //==========================================================================
 {
@@ -121,11 +121,11 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	program->SetMatrix("NormalMatrix", normalMatrix);
 	program->SetMatrix("MVP", mvp);
 	// Frag tests
-	if (fragShaderName == "phong" || fragShaderName == "uv") {
+	if (fragShaderName == "phong" || fragShaderName == "uv" || fragShaderName == "toon") {
 		program->SetVector("LightPosition", spotLight.position);
 		program->SetVector("LightIntensity", glm::vec3(spotLight.intensity));
 	}
-	if (fragShaderName == "phong" || fragShaderName == "spotlightPhong" || fragShaderName == "uv") {
+	if (fragShaderName == "phong" || fragShaderName == "spotlightPhong" || fragShaderName == "uv" || fragShaderName == "toon") {
 		program->SetMaterial("objectMaterial", renderObject.material);
 	}
 	if (fragShaderName == "spotlightPhong") {
@@ -151,8 +151,23 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 			program->SetTexture("normalMaskTextureId", renderObject.normalMaskTextureHandle);
 		}
 	}
-
+	if (fragShaderName == "toon") {
+		program->SetVector("resolution", glm::vec2(m_width, m_height));
+		program->SetBool("isSilhouette", true);
+		glEnable(GL_CULL_FACE); // enable culling
+		glCullFace(GL_FRONT); // enable culling of front faces
+		//glDepthMask(GL_TRUE); // enable writes to Z-bufferer
+		renderObject.draw();
+		program->SetBool("isSilhouette", false);
+		glCullFace(GL_BACK); // enable culling of back faces
+		//glDepthMask(GL_FALSE); // disable writes to Z-buffer
+	}
 	renderObject.draw();
+	if (fragShaderName == "toon") {
+		glDisable(GL_CULL_FACE); // disable culling
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+	}
 	program->UnbindProgram();
 }
 
@@ -242,14 +257,14 @@ void MyGlWindow::initialize()
 	//renderObjectList.push_back(std::make_unique<Cube>());
 	//renderObjectList.push_back(std::make_unique<Cow>());
 	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
-	renderObjectList.push_back(std::make_unique<VikingRoom>());
-	renderObjectList.push_back(std::make_unique<Ogre>());
+	//renderObjectList.push_back(std::make_unique<VikingRoom>());
+	//renderObjectList.push_back(std::make_unique<Ogre>());
 	//renderObjectList.push_back(std::make_unique<Globe>());
 	//renderObjectList.push_back(std::make_unique<Sphere>());
-	//renderObjectList.push_back(std::make_unique<TeaPot>());
+	renderObjectList.push_back(std::make_unique<TeaPot>());
 	//renderObjectList.push_back(std::make_unique<Taurus>(1.0f, 0.5f, 32, 32));
 	///renderObjectList.push_back(std::make_unique<Cat>());
 	// Spot Light
 	spotLight.position = glm::vec4(00.0f, 20.0f, 0.0f, 1.0f);
-	spotLight.intensity = 0.5f;
+	spotLight.intensity = 1.0f;
 }
