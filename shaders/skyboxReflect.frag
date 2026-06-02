@@ -12,11 +12,12 @@ struct Material {
     float shininess;
 };
 uniform Material objectMaterial;
+uniform float reflectFactor = 0.3;
 
 out vec4 FragColor;
 
 in vec3 ReflectDir;
-uniform bool DrawSkyBox;
+uniform bool DrawSkyBox = false;
 uniform mat4 MVP;
 uniform samplerCube CubeMapTex;
 
