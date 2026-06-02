@@ -103,13 +103,8 @@ glm::mat4 perspective(float fov, float aspect, float n, float f)
 }
 
 
-inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model) const
+inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model, glm::mat4 projection, glm::mat4 view) const
 {
-	glm::vec3 eye = m_viewer->getViewPoint(); // m_viewer->getViewPoint().x(), m_viewer->getViewPoint().y(), m_viewer->getViewPoint().z());
-	glm::vec3 look = m_viewer->getViewCenter();   //(m_viewer->getViewCenter().x(), m_viewer->getViewCenter().y(), m_viewer->getViewCenter().z());
-	glm::vec3 up = m_viewer->getUpVector(); // m_viewer->getUpVector().x(), m_viewer->getUpVector().y(), m_viewer->getUpVector().z());
-	glm::mat4 view = glm::lookAt(eye, look, up);
-	glm::mat4 projection = glm::perspective(45.0f, 1.0f * m_width / m_height, 0.1f, 500.0f);
 	glm::mat4 mview = view * model;
 	glm::mat4 mvp = projection * view * model;
 
@@ -175,6 +170,24 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 void MyGlWindow::draw(void)
 {
 	bool hadBunny = false;
+	glm::mat4 projection = glm::perspective(45.0f, 1.0f * m_width / m_height, 0.1f, 500.0f);
+	glm::vec3 eye = m_viewer->getViewPoint(); // m_viewer->getViewPoint().x(), m_viewer->getViewPoint().y(), m_viewer->getViewPoint().z());
+	glm::vec3 look = m_viewer->getViewCenter();   //(m_viewer->getViewCenter().x(), m_viewer->getViewCenter().y(), m_viewer->getViewCenter().z());
+	glm::vec3 up = m_viewer->getUpVector(); // m_viewer->getUpVector().x(), m_viewer->getUpVector().y(), m_viewer->getUpVector().z());
+	glm::mat4 view = glm::lookAt(eye, look, up);
+	
+	// Skybox
+	glm::mat4 view2 = glm::mat4(glm::mat3(view)); // mat3 strips the 4th row/column
+	glm::mat4 skyboxModel(1.0);
+	glm::mat4 skyboxMvp = projection * view2 * skyboxModel;
+
+	skyboxProgram->BindProgram();
+	skyboxProgram->SetBool("DrawSkyBox", GL_TRUE);  //indicate that we are doing SKybox
+	skyboxProgram->SetMatrix("MVP", skyboxMvp);
+	skyboxProgram->SetCubeTexture("CubeMapTex", 0);
+	skyBox.draw();
+	skyboxProgram->UnbindProgram();
+	
 	decltype(renderObjectList)::size_type i = 0;
 
 	for (auto it = renderObjectList.rbegin(); it != renderObjectList.rend(); ++it) {
@@ -200,24 +213,25 @@ void MyGlWindow::draw(void)
 		else if (Ogre* d = dynamic_cast<Ogre*>((*it).get())) {
 			model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.0f)); // move up
 		}
-		drawRenderObject(*(*it).get(), model);
+		drawRenderObject(*(*it).get(), model, projection, view);
 		if ((*it)->name == "Bunny") {
 			hadBunny = true;
 		}
 		i++;
 	}
 	/*
-	*/
-	glm::mat4 model(1.0);
+	// Floor
+	glm::mat4 floorModel(1.0);
 
-	model = glm::translate(model,
+	floorModel = glm::translate(floorModel,
 		glm::vec3(
 			0.0f - (renderFloor.m_width * renderFloor.m_checksize_x / 2),
 			0.0f,
 			0.0f - (renderFloor.m_height * renderFloor.m_checksize_z / 2)
 		)
 	);
-	drawRenderObject(renderFloor, model);
+	drawRenderObject(renderFloor, floorModel, projection, view);
+	*/
 }
 
 MyGlWindow::~MyGlWindow()
@@ -233,6 +247,9 @@ void MyGlWindow::initialize()
 		program = std::unique_ptr<Program>(
 			Program::GenerateFromFileVsFs(
 				SHADER_PATH + vertShaderName + ".vert", SHADER_PATH + fragShaderName + ".frag"));
+		skyboxProgram = std::unique_ptr<Program>(
+			Program::GenerateFromFileVsFs(
+				SHADER_PATH + "mapping.vert", SHADER_PATH + "mapping.frag"));
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << "SHADER ERROR: " << e.what() << std::endl;
@@ -243,16 +260,6 @@ void MyGlWindow::initialize()
 		std::cerr << "UNEXPECTED ERROR: " << e.what() << std::endl;
 		exit(1);
 	}
-
-	/*
-	shaderProgram = std::make_unique<ShaderProgram>();
-	//load shaders
-	shaderProgram->initFromFiles("../../shaders/simple.vert", "../../shaders/simple.frag");
-	//declaration of uniform var.
-	shaderProgram->addUniform("model");  //add a uniform var.
-	shaderProgram->addUniform("view");  //add a uniform var.
-	shaderProgram->addUniform("projection");
-	*/
 
 	//renderObjectList.push_back(std::make_unique<Cube>());
 	//renderObjectList.push_back(std::make_unique<Cow>());

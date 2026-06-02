@@ -18,6 +18,7 @@
 #include "Viewer.h"
 #include "Program.h"
 #include "Render/CheckeredFloor.h"
+#include "Render/Skybox.h"
 
 #pragma warning(pop)
 
@@ -57,8 +58,8 @@ private:
 	CheckedFloor renderFloor;
 	std::vector<std::unique_ptr<ARender>> renderObjectList;
 	SpotLight spotLight;
-	inline void drawRenderObject(ARender&, glm::mat4&) const;
+	SkyBox skyBox;
+	std::unique_ptr<Program> skyboxProgram;
 
-	std::unique_ptr<ShaderProgram> m_shader = nullptr;
-	std::unique_ptr<Program> m_shaderNew = nullptr;
+	inline void drawRenderObject(ARender& renderObject, glm::mat4& model, glm::mat4 projection, glm::mat4 view) const const;
 };

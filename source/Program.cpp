@@ -299,6 +299,17 @@ void Program::SetTexture(const std::string& name, GLuint textureID)
 	TextureCount++;
 }
 
+void Program::SetCubeTexture(const std::string& name, GLuint textureID)
+{
+	ValidateSetUniform(name);
+
+	glActiveTexture(GL_TEXTURE0 + TextureCount);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	glUniform1i(GetUniformID(name), TextureCount);
+	TextureCount++;
+}
+
 void Program::SetMaterial(const std::string& name, const Material& material)
 {
 	ValidateSetUniform(name);

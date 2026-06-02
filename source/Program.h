@@ -111,6 +111,7 @@ public:
 
 	void SetTexture(GLuint id, GLuint textureID);
 	void SetTexture(const std::string& name, GLuint textureID);
+	void SetCubeTexture(const std::string& name, GLuint textureID);
 
 	void SetMaterial(const std::string& name, const Material& material);
 private:
