@@ -18,7 +18,7 @@
 
 #include "Materials/Materials.h"
 
-Taurus::Taurus() : ARender("Taurus", wood),
+Taurus::Taurus() : ARender("Taurus", emerald),
     outerRadius(1.0f), innerRadius(0.5f), rings(32), sides(32)
 {
     this->init();

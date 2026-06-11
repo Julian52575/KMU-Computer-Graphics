@@ -318,6 +318,7 @@ void Program::SetMaterial(const std::string& name, const Material& material)
 	this->SetVector(name + ".Ka", material.ambientColor);
 	this->SetVector(name + ".Ks", material.ambientColor);
 	this->SetFloat(name + ".shininess", material.shininess);
+	this->SetVector(name + ".refractRGB", material.refractRGB);
 }
 
 void Program::ValidateSetUniform(GLuint id)

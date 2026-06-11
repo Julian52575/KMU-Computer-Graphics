@@ -61,5 +61,6 @@ private:
 	SkyBox skyBox;
 	std::unique_ptr<Program> skyboxProgram;
 
-	inline void drawRenderObject(ARender& renderObject, glm::mat4& model, glm::mat4 projection, glm::mat4 view) const const;
+	inline void drawRenderObject(ARender& renderObject,
+		glm::mat4& model, glm::mat4 projection, glm::mat4 view, glm::vec3 eye) const const;
 };

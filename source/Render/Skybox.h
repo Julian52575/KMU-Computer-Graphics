@@ -22,4 +22,9 @@ private:
 public:
 	SkyBox();
 	void draw();
+	GLuint getTextureID() const { return texID; };
+	void bindTexture() const
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texID);
+	};
 };

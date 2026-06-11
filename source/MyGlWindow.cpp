@@ -30,7 +30,7 @@ std::unique_ptr<Program> program = nullptr;
  
 MyGlWindow::MyGlWindow(int w, int h)
 	: renderFloor(CheckedFloor(33, 33, 5.0f, 2.5f)),
-	fragShaderName("skyboxReflect"), vertShaderName("skyboxReflect"),
+	fragShaderName("refraction"), vertShaderName("refraction"),
 	m_width(w), m_height(h)
 //==========================================================================
 {
@@ -103,7 +103,8 @@ glm::mat4 perspective(float fov, float aspect, float n, float f)
 }
 
 
-inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model, glm::mat4 projection, glm::mat4 view) const
+inline void MyGlWindow::drawRenderObject(ARender& renderObject,
+	glm::mat4& model, glm::mat4 projection, glm::mat4 view, glm::vec3 eye) const
 {
 	glm::mat4 mview = view * model;
 	glm::mat4 mvp = projection * view * model;
@@ -122,7 +123,8 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	}
 	if (fragShaderName == "phong" || fragShaderName == "spotlightPhong"
 	|| fragShaderName == "uv" || fragShaderName == "toon"
-	|| fragShaderName == "skyboxReflect") {
+	|| fragShaderName == "skyboxReflect"
+	|| fragShaderName == "refraction") {
 		program->SetMaterial("objectMaterial", renderObject.material);
 	}
 	if (fragShaderName == "spotlightPhong") {
@@ -162,6 +164,11 @@ inline void MyGlWindow::drawRenderObject(ARender& renderObject, glm::mat4& model
 	if (fragShaderName == "skyboxReflect") {
 		program->SetVector("WorldCameraPosition", m_viewer->getViewPoint());
 	}
+	if (fragShaderName == "refraction") {
+		program->SetVector("WorldCameraPosition", eye);
+		skyBox.bindTexture();
+		program->SetCubeTexture("CubeMapTex", skyBox.getTextureID());
+	}
 	renderObject.draw();
 	if (fragShaderName == "toon") {
 		glDisable(GL_CULL_FACE); // disable culling
@@ -189,7 +196,7 @@ void MyGlWindow::draw(void)
 	skyboxProgram->BindProgram();
 	skyboxProgram->SetBool("DrawSkyBox", GL_TRUE);  //indicate that we are doing SKybox
 	skyboxProgram->SetMatrix("MVP", skyboxMvp);
-	skyboxProgram->SetCubeTexture("CubeMapTex", 0);
+	skyboxProgram->SetCubeTexture("CubeMapTex", skyBox.getTextureID());
 	skyboxProgram->SetVector("WorldCameraPosition", eye);  // ← add this
 	skyBox.draw();
 	skyboxProgram->UnbindProgram();
@@ -219,7 +226,7 @@ void MyGlWindow::draw(void)
 		else if (Ogre* d = dynamic_cast<Ogre*>((*it).get())) {
 			model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.0f)); // move up
 		}
-		drawRenderObject(*(*it).get(), model, projection, view);
+		drawRenderObject(*(*it).get(), model, projection, view, eye);
 		if ((*it)->name == "Bunny") {
 			hadBunny = true;
 		}
@@ -267,7 +274,7 @@ void MyGlWindow::initialize()
 		exit(1);
 	}
 
-	//renderObjectList.push_back(std::make_unique<Cube>());
+	renderObjectList.push_back(std::make_unique<Cube>());
 	//renderObjectList.push_back(std::make_unique<Cow>());
 	//renderObjectList.push_back(std::make_unique<Bunny>());  // Caution: very big
 	renderObjectList.push_back(std::make_unique<VikingRoom>());

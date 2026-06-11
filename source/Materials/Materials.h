@@ -9,22 +9,32 @@ struct Material {
     glm::vec3 diffuseColor;
     glm::vec3 specularColor;
     float shininess;
+	glm::vec3 refractRGB = glm::vec3(1.05f); // Index of refraction (for refraction shader)
 };
 
 // 💎 Emerald
 const Material defaultMaterial = {
-    {0.1, 0.1, 0.1},
-    {0.1, 0.1, 0.1},
-    {0.1, 0.1, 0.1},
+    {1, 1, 1},
+    {1, 1, 1},
+    {1, 1, 1},
     10
+};
+
+const Material glass = {
+    { 1.0f, 1.0f, 1.0f },
+    { 0.9f, 0.9f, 0.9f },
+    { 0.9f, 0.9f, 0.9f },
+    128.0f,
+    {1.52f, 1.52f, 1.52f}
 };
 
 // 💎 Emerald
 const Material emerald = {
-    {0.0215f, 0.1745f, 0.0215f},
-    {0.07568f, 0.61424f, 0.07568f},
-    {0.633f, 0.727811f, 0.633f},
-    7.68f
+    { 0.0, 1, 0},
+    { 0, 1, 0},
+    { 0, 1, 0},
+    76.8f,
+    {1.58f, 1.58f, 1.58f}
 };
 
 // 🔴 Ruby
@@ -103,7 +113,8 @@ const Material zero = {
     {0.0f, 0.0f, 0.0f},
     {0.0f, 0.0f, 0.0f},
     {0.0f, 0.0f, 0.0f},
-    0.0f
+    0.0f,
+    glm::vec3(0.0f)
 };
 
 const Material checkFloor = {

@@ -45,7 +45,7 @@ private:
 
 class ARender {
 public:
-	ARender(const std::string& name, const Material& material = gold) :
+	ARender(const std::string& name, const Material& material = defaultMaterial) :
 		name(name), material(material)
 	{
 		;

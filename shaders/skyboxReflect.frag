@@ -10,6 +10,7 @@ struct Material {
     vec3 Ka;
     vec3 Ks;
     float shininess;
+    float eta;
 };
 uniform Material objectMaterial;
 uniform float reflectFactor = 0.3;
@@ -23,6 +24,9 @@ uniform samplerCube CubeMapTex;
 
 void main()
 {
+    // No optimizing uniform away
+    FragColor = vec4(objectMaterial.eta);
+    //
     vec4 CubeMapColor = texture(CubeMapTex, ReflectDir);
 
     if (DrawSkyBox) {
