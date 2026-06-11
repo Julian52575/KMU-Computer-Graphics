@@ -17,7 +17,8 @@ const Material defaultMaterial = {
     {1, 1, 1},
     {1, 1, 1},
     {1, 1, 1},
-    10
+    10,
+    {1.2f, 1.5f, 1.7f}
 };
 
 const Material glass = {
